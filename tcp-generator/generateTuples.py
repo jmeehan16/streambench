@@ -6,6 +6,7 @@ This program only generates the 'sentence' portion of the tuple
 import random as r
 import argparse
 
+# The minimum number of words allowed per line
 WORD_COUNT_MIN = 10
 
 def main(args):
