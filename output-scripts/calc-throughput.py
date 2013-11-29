@@ -1,10 +1,10 @@
 #!/usr/bin/python
 import sys
+import math
 
 with open(sys.argv[1]) as f:
 	lines = f.readlines()
 
-newTime = False
 timestamp = 0
 throughput = 0
 minLatency = 9999999
@@ -18,9 +18,7 @@ else:
 	timePerRun = int(sys.argv[2])
 
 for line in lines:
-	if line[:2] == "--":
-		newTime = not newTime
-	elif newTime:
+	if line[:10] == "Timestamp:":
 		if minLatency < 9999999:
 			print "TIMESTAMP: " + str(timestamp)
 			print "  LATENCY: " + str(minLatency)
@@ -30,9 +28,7 @@ for line in lines:
 			numRuns = numRuns + 1
 			minLatency = 9999999
 			throughput = 0
-		else:
-			print "--NO TIMESTAMPS TO PROCESS--"
-		timestamp = line[6:19]
+		timestamp = (int(line[11:].replace("\n", ""))/1000) * 1000
 	else:
 		line = line.replace("(","")
 		line = line.replace(")","")
@@ -45,8 +41,8 @@ for line in lines:
 			throughput=throughput+1
 
 print "-------------------------"
-print "Number of Runs: " + str(numRuns)
-print "Time Per Run: " + str(timePerRun)
-print "AVG Latency: " + str(float(totalLatency)/numRuns)
-print "AVG Throughput: " + str(float(totalThroughput)/(numRuns*timePerRun))
+print "Number of Runs: " + str(numRuns) + " runs"
+print "Time Per Run: " + str(timePerRun) + " ms"
+print "AVG Latency: " + str(float(totalLatency)/numRuns) + " ms"
+print "AVG Throughput: " + str(float(totalThroughput)/(numRuns*timePerRun)) + " tuples/sec"
 
