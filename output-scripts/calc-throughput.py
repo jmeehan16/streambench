@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys
+import math
 
 with open(sys.argv[1]) as f:
 	lines = f.readlines()
@@ -27,7 +28,7 @@ for line in lines:
 			numRuns = numRuns + 1
 			minLatency = 9999999
 			throughput = 0
-		timestamp = line[11:].replace("\n", "")
+		timestamp = (int(line[11:].replace("\n", ""))/1000) * 1000
 	else:
 		line = line.replace("(","")
 		line = line.replace(")","")
