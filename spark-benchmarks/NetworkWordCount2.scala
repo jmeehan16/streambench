@@ -19,6 +19,9 @@ package org.apache.spark.streaming.examples
 
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.StreamingContext._
+import java.net._
+import java.io._
+import scala.io._
 
 /**
  * Counts words in UTF8 encoded, '\n' delimited text received from the network every second.
@@ -29,18 +32,37 @@ import org.apache.spark.streaming.StreamingContext._
  * To run this on your local machine, you need to first run a Netcat server
  *    `$ nc -lk 9999`
  * and then run the example
- *    `$ ./run-example spark.streaming.examples.NetworkWordCount local[2] localhost 9999`
+ *    `$ ./run-example apache.org.spark.streaming.examples.NetworkWordCount2 local[2] localhost 9999`
  */
 object NetworkWordCount2 {
+  def sendName(x: String, out: PrintStream)
+  {
+    out.println(x);
+    out.flush();
+  }
+
+  def sendWords(x: Array[(java.lang.String, Int)], out: PrintStream)
+  {
+    out.println(System.currentTimeMillis);
+    for(i <- 0 until x.length) {
+      out.println(x(i));
+    }
+    out.flush();
+  }
+
   def main(args: Array[String]) {
     if (args.length < 3) {
-      System.err.println("Usage: NetworkWordCount <master> <hostname> <port>\n" +
+      System.err.println("Usage: NetworkWordCount2 <master> <hostname> <port>\n" +
         "In local mode, <master> should be 'local[n]' with n > 1")
       System.exit(1)
     }
 
+    //val server = new ServerSocket(3333)
+
+
+
     // Create the context with a 1 second batch size
-    val ssc = new StreamingContext(args(0), "NetworkWordCount", Seconds(1),
+    val ssc = new StreamingContext(args(0), "NetworkWordCount2", Seconds(1),
       System.getenv("SPARK_HOME"), Seq(System.getenv("SPARK_EXAMPLES_JAR")))
     val ia = InetAddress.getByName("localhost");
 
@@ -49,12 +71,21 @@ object NetworkWordCount2 {
     val lines = ssc.socketTextStream(args(1), args(2).toInt)
     // JOHN: added this for output
     val socket = new Socket(ia, 3333)
-    val out = new ObjectOutputStream(new DataOutputStream(this.socket.getOutputStream))
+    lazy val in = new BufferedSource(socket.getInputStream()).getLines()
+    val out = new PrintStream(socket.getOutputStream())
+    //val out = new ObjectOutputStream(new DataOutputStream(this.socket.getOutputStream))
 
     val words = lines.flatMap(_.split(" "))
     val wordCounts = words.map(x => (x, 1)).reduceByKey(_ + _)
-    wordCounts.foreach(x => this.out.writeUTF(x))
+   // wordCounts.persist()
+    //wordCounts.foreach(x => sendName(x.name,out))
+    wordCounts.foreach(x => sendWords(x.collect(),out))
+    //wordCounts.foreach(x => this.out.println(x))
+    //wordCounts.foreach(x => this.out.writeUTF(x))
+    //wordCounts.print()
     //wordCounts.saveAsTextFiles("output")
+
     ssc.start()
+
   }
 }
