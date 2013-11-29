@@ -32,18 +32,14 @@ import scala.io._
  * To run this on your local machine, you need to first run a Netcat server
  *    `$ nc -lk 9999`
  * and then run the example
- *    `$ ./run-example apache.org.spark.streaming.examples.NetworkWordCount2 local[2] localhost 9999`
+ *    `$ ./run-example org.apache.spark.streaming.examples.NetworkWordCount2 local[2] localhost 9999`
  */
 object NetworkWordCount2 {
-  def sendName(x: String, out: PrintStream)
-  {
-    out.println(x);
-    out.flush();
-  }
+  
 
   def sendWords(x: Array[(java.lang.String, Int)], out: PrintStream)
   {
-    out.println(System.currentTimeMillis);
+    out.println("Timestamp: " + System.currentTimeMillis);
     for(i <- 0 until x.length) {
       out.println(x(i));
     }
