@@ -8,6 +8,7 @@ with open(sys.argv[1]) as f:
 timestamp = 0
 throughput = 0
 minLatency = 9999999
+count = 1
 
 totalLatency = 0
 totalThroughput = 0
@@ -42,10 +43,11 @@ for line in lines:
 			if latency < minLatency:
 				minLatency = latency
 			throughput=throughput+1
+			count=count+1
 
 print "-------------------------"
 print "Number of Runs: " + str(numRuns) + " runs"
 print "Time Per Run: " + str(timePerRun) + " s"
 print "AVG Latency: " + str(float(totalLatency)/numRuns) + " ms"
 print "AVG Throughput: " + str(float(totalThroughput)/(numRuns*timePerRun)) + " tuples/sec"
-
+print "Total number of tuples recieved: " + str(count)
