@@ -17,6 +17,8 @@ if len(sys.argv) < 3:
 else:
 	timePerRun = int(sys.argv[2])
 
+print "Reporting interval: %d sec(s)" % timePerRun
+
 for line in lines:
 	if line[:10] == "Timestamp:":
 		if minLatency < 9999999:
@@ -28,7 +30,8 @@ for line in lines:
 			numRuns = numRuns + 1
 			minLatency = 9999999
 			throughput = 0
-		timestamp = (int(line[11:].replace("\n", ""))/1000) * 1000
+ 		#timestamp = (int(line[11:].replace("\n", ""))/1000) * 1000
+		timestamp = int(line[11:].strip())
 	else:
 		line = line.replace("(","")
 		line = line.replace(")","")
@@ -42,7 +45,7 @@ for line in lines:
 
 print "-------------------------"
 print "Number of Runs: " + str(numRuns) + " runs"
-print "Time Per Run: " + str(timePerRun) + " ms"
+print "Time Per Run: " + str(timePerRun) + " s"
 print "AVG Latency: " + str(float(totalLatency)/numRuns) + " ms"
 print "AVG Throughput: " + str(float(totalThroughput)/(numRuns*timePerRun)) + " tuples/sec"
 
