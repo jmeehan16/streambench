@@ -10,6 +10,8 @@ import time
 TCP_IP='localhost'
 TCP_PORT=9999
 
+sent_tuples = []
+
 def main(args):
     fd = open(args.input, 'r')
     dataset = fd.readlines()
@@ -29,11 +31,18 @@ def main(args):
     while now - start < args.test_time:
         time.sleep(wait_time_sec) 
         now = time.time()
-        conn.send("TS-%d %s" % (int(now*1000), dataset[i % len(dataset)]))
+        ts = "TS-%d" % int(now*1000)
+        conn.send("%s %s" % (ts, dataset[i % len(dataset)]))
+        sent_tuples.append(ts)
         i += 1
 
     conn.close()
     s.close()
+
+    fd = open('sent_tuples.txt', 'w')
+    for st in sent_tuples:
+        fd.write(st + "\n")
+    fd.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Read in a tuple data file and send them to a SDBMS')
