@@ -7,6 +7,8 @@ TCP_PORT = 3333
 BUFFER_SIZE = 1024
 MESSAGE = "Hello, World!"
 
+fd = open('catcher_data.txt', 'w')
+
 try:
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.bind((TCP_IP, TCP_PORT))
@@ -19,7 +21,9 @@ conn, addr = s.accept()
 print 'Connection address:', addr
 
 while 1:
-    data = conn.recv(BUFFER_SIZE)
-    if not data: continue
-    print data
+  data = conn.recv(BUFFER_SIZE)
+  if not data: continue
+  #print data
+  fd.write(data)
 s.close()
+fd.close()
