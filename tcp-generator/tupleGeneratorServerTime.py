@@ -44,6 +44,12 @@ def main(args):
         fd.write(st + "\n")
     fd.close()
 
+    start = int(sent_tuples[0].replace("TS-", ""))
+    end = int(sent_tuples[-1].replace("TS-", ""))
+    total = len(sent_tuples)
+
+    print "Average throughput: %.4f" % (float(total) / (end-start)*1000)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Read in a tuple data file and send them to a SDBMS')
     parser.add_argument('-i','--input', help='Input file name for tuple data', required=True)
