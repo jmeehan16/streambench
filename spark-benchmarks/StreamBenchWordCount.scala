@@ -34,7 +34,7 @@ import scala.io._
  * and then run the example
  *    `$ ./run-example org.apache.spark.streaming.examples.NetworkWordCount2 local[2] localhost 9999`
  */
-object NetworkWordCount2 {
+object StreamBenchWordCount {
   
 
   def sendWords(x: Array[(java.lang.String, Int)], out: PrintStream)
@@ -58,7 +58,7 @@ object NetworkWordCount2 {
 
 
     // Create the context with a 1 second batch size
-    val ssc = new StreamingContext(args(0), "NetworkWordCount2", Seconds(1),
+    val ssc = new StreamingContext(args(0), "StreamBenchWordCount", Seconds(1),
       System.getenv("SPARK_HOME"), Seq(System.getenv("SPARK_EXAMPLES_JAR")))
     val ia = InetAddress.getByName("localhost");
 
