@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import socket
 import threading
+import sys
 
-TCP_IP = '127.0.0.1'
+TCP_IP = 'euc13'
 TCP_PORT = 3333
 BUFFER_SIZE = 1024
 MESSAGE = "Hello, World!"
@@ -17,13 +18,30 @@ except socket.error:
   print 'Failed to create socket'
   sys.exit()
 
-conn, addr = s.accept()
-print 'Connection address:', addr
+tupleGenConn, tupleGenAddr = s.accept()
+print "Connection to tuple generator:", tupleGenAddr
+tupleGenConn.setblocking(0) #Set non-blocking
 
-while 1:
+conn, addr = s.accept()
+print "Spark Application address:", addr
+conn.setblocking(2)
+
+while True:
+  try:
+    tupleGenData = tupleGenConn.recv(BUFFER_SIZE)
+    print "Completed test! Quitting..."
+    fd.write("\n" + tupleGenData)
+    print "Test run args: %s" % tupleGenData.strip()
+    break
+  except socket.error:
+    pass
+
   data = conn.recv(BUFFER_SIZE)
-  if not data: continue
-  #print data
+  if not data:
+    continue
+
   fd.write(data)
+
 s.close()
+tupleGenConn.close()
 fd.close()
