@@ -16,7 +16,7 @@ def main(args):
     print "Sending tuples for a total of %d seconds, with a wait time of %0.4f ms" % (args.test_time, args.wait_time)
 
     catcherSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    catcherSocket.connect(("euc13", 3333))
+    catcherSocket.connect((args.catcher_host, 3333))
     print 'Connected to StreamBench Catcher'
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -59,11 +59,12 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Read in a tuple data file and send them to a SDBMS')
     parser.add_argument('-i','--input', help='Input file name for tuple data', required=True)
-    parser.add_argument('-s','--server_host', help='Address of SDMBS to send tuples to', required=False, default='euc03')
+    parser.add_argument('-s','--server_host', help='Address of SDMBS to send tuples to', required=False, default='localhost')
     parser.add_argument('-p','--server_port', help='Port of SDMBS to send tuples to', required=False, default=9999, type=int)
     parser.add_argument('-w','--wait_time', help='The time in milliseconds to sleep between each tuple', required=True, type=float)
     parser.add_argument('-t','--test_time', help='The total time in seconds for the test to run', required=True, type=int, default=30)
-    args = parser.parse_args()
+    parser.add_argument('-c','--catcher_host', help='The hostname for the catcher program', required=True, type=str, default="localhost")
+args = parser.parse_args()
  
     main(args)
 

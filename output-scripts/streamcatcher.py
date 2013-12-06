@@ -3,7 +3,7 @@ import socket
 import threading
 import sys
 
-TCP_IP = 'euc13'
+TCP_IP = 'localhost'
 TCP_PORT = 3333
 BUFFER_SIZE = 1024
 MESSAGE = "Hello, World!"
