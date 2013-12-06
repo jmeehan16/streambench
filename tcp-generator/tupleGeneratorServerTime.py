@@ -64,7 +64,7 @@ if __name__ == '__main__':
     parser.add_argument('-w','--wait_time', help='The time in milliseconds to sleep between each tuple', required=True, type=float)
     parser.add_argument('-t','--test_time', help='The total time in seconds for the test to run', required=True, type=int, default=30)
     parser.add_argument('-c','--catcher_host', help='The hostname for the catcher program', required=True, type=str, default="localhost")
-args = parser.parse_args()
+    args = parser.parse_args()
  
     main(args)
 

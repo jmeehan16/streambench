@@ -32,7 +32,7 @@ import scala.io._
  * To run this on your local machine, you need to first run a Netcat server
  *    `$ nc -lk 9999`
  * and then run the example
- *    `$ ./run-example org.apache.spark.streaming.examples.NetworkWordCount2 local[2] localhost 9999`
+ *    `$ ./run-example org.apache.spark.streaming.examples.StreamBenchWordCount local[2] localhost 9999`
  */
 object StreamBenchWordCount {
   
