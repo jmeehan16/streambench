@@ -53,8 +53,6 @@ object StreamBenchWordCount {
       System.exit(1)
     }
 
-    //val server = new ServerSocket(3333)
-
 
 
     // Create the context with a 1 second batch size
@@ -69,17 +67,12 @@ object StreamBenchWordCount {
     val socket = new Socket(ia, 3333)
     lazy val in = new BufferedSource(socket.getInputStream()).getLines()
     val out = new PrintStream(socket.getOutputStream())
-    //val out = new ObjectOutputStream(new DataOutputStream(this.socket.getOutputStream))
 
     val words = lines.flatMap(_.split(" "))
     val wordCounts = words.map(x => (x, 1)).reduceByKey(_ + _)
-   // wordCounts.persist()
-    //wordCounts.foreach(x => sendName(x.name,out))
+
     wordCounts.foreach(x => sendWords(x.collect(),out))
-    //wordCounts.foreach(x => this.out.println(x))
-    //wordCounts.foreach(x => this.out.writeUTF(x))
-    //wordCounts.print()
-    //wordCounts.saveAsTextFiles("output")
+
 
     ssc.start()
 

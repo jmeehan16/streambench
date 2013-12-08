@@ -9,9 +9,12 @@ streamcatcher.py
 	python streamcatcher.py -s 'localhost' -p 3333 -o 'catcher_data.txt'
 
 tupleGeneratorServerTime.py
-	python tupleGeneratorServerTime.py -i 'samples.txt' -s 'localhost' -p 9999 -w 10 -t 30 -c 'localhost'
+	python tupleGeneratorServerTime.py -i 'sample.txt' -s 'localhost' -p 9999 -w 10 -t 30 -c 'localhost'
 
 Spark!
 	./run-example org.apache.spark.streaming.examples.StreamBenchWordCount local[2] localhost 9999
 
+Storm!
+	First create the jar file of the project.  Then, from the root Storm directory, use:
+	bin/storm jar teststorm.jar storm.starter.StreamBenchWordCountTopology stream1 localhost 9999
 

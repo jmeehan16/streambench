@@ -43,11 +43,11 @@ import scala.io._
  */
 
 object NetworkGrep {
-  def sendCounts(x: Array[Long], out: PrintStream)
+  def sendCounts(x: Array[String], out: PrintStream)
   {
     out.println("Timestamp: " + System.currentTimeMillis);
     for(i <- 0 until x.length) {
-      out.println("Grep count: " + x(i));
+      out.println(x(i));
     }
     out.flush();
   }
@@ -73,7 +73,7 @@ object NetworkGrep {
     lazy val in = new BufferedSource(socket.getInputStream()).getLines()
     val out = new PrintStream(socket.getOutputStream())
 
-    val words = lines.filter(_.contains("the")).count().foreach(r =>
+    val words = lines.filter(_.contains(" the ")).foreach(r =>
       sendCounts(r.collect(), out))
 
     ssc.start()
