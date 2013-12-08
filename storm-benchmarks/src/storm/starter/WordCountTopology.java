@@ -14,6 +14,7 @@ import backtype.storm.topology.base.BaseBasicBolt;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
+import storm.starter.bolt.PrinterBolt;
 import storm.starter.spout2.RandomSentenceSpout;
 
 import java.util.HashMap;
@@ -73,15 +74,16 @@ public class WordCountTopology {
 
   public static void main(String[] args) throws Exception {
 
+
     TopologyBuilder builder = new TopologyBuilder();
 
     builder.setSpout("spout", new RandomSentenceSpout(), 5);
 
     builder.setBolt("split", new SplitSentence(), 8).shuffleGrouping("spout");
     builder.setBolt("count", new WordCount(), 12).fieldsGrouping("split", new Fields("word"));
-
+    builder.setBolt("print", new PrinterBolt()).shuffleGrouping("count");
     Config conf = new Config();
-    conf.setDebug(true);
+    //conf.setDebug(true);
 
 
     if (args != null && args.length > 0) {

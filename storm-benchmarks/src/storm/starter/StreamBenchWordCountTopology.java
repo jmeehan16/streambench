@@ -17,6 +17,9 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
+import storm.starter.bolt.PrinterBolt;
+import storm.starter.bolt.RollingCountBolt;
+import storm.starter.spout2.RandomSentenceSpout;
 import storm.starter.spout2.SentenceCatcherSpout;
 
 import java.util.HashMap;
@@ -87,13 +90,17 @@ public class StreamBenchWordCountTopology {
 	
 	TopologyBuilder builder = new TopologyBuilder();
 	
-	builder.setSpout("spout", new SentenceCatcherSpout(host, port), 1);
+	//builder.setSpout("spout", new SentenceCatcherSpout(host, port), 1);
+	builder.setSpout("spout", new RandomSentenceSpout(), 5);
 	
 	builder.setBolt("split", new SplitSentence(), 8).shuffleGrouping("spout");
-	builder.setBolt("count", new WordCount(), 12).fieldsGrouping("split", new Fields("word"));
+	//RollingCountBolt(1 sec window, emit every 1 sec)
+	//builder.setBolt("count", new WordCount()).fieldsGrouping("windowcount", new Fields("word"));
+	builder.setBolt("windowcount", new RollingCountBolt(1, 1), 12).fieldsGrouping("split", new Fields("word"));
+	builder.setBolt("print", new PrinterBolt()).shuffleGrouping("windowcount");
 	
 	Config conf = new Config();
-	conf.setDebug(true);
+	//conf.setDebug(true);
 	
 	/**
 	if (args != null && args.length > 0) {

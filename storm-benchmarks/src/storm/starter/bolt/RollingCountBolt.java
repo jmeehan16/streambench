@@ -52,6 +52,8 @@ public class RollingCountBolt extends BaseRichBolt {
   private final int emitFrequencyInSeconds;
   private OutputCollector collector;
   private NthLastModifiedTimeTracker lastModifiedTracker;
+  
+  int i = 0;
 
   public RollingCountBolt() {
     this(DEFAULT_SLIDING_WINDOW_IN_SECONDS, DEFAULT_EMIT_FREQUENCY_IN_SECONDS);
@@ -80,6 +82,8 @@ public class RollingCountBolt extends BaseRichBolt {
   public void execute(Tuple tuple) {
     if (TupleHelpers.isTickTuple(tuple)) {
       LOG.debug("Received tick tuple, triggering emit of current window counts");
+      System.out.println("Tick " + i);
+      i++;
       emitCurrentWindowCounts();
     }
     else {
