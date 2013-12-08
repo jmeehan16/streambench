@@ -37,7 +37,7 @@ if __name__ == '__main__':
     parser.add_argument('-i','--input', help='Input file name for tuple data', required=True)
     parser.add_argument('-s','--server_host', help='Address of SDMBS to send tuples to', required=False, default='localhost')
     parser.add_argument('-p','--server_port', help='Port of SDMBS to send tuples to', required=False, default=9999, type=int)
-    parser.add_argument('-w','--wait_time', help='The time in milliseconds to sleep between each tuple', required=True, type=int)
+    parser.add_argument('-w','--wait_time', help='The time in milliseconds to sleep between each tuple', required=False, type=int, default=0)
     args = parser.parse_args()
  
     main(args)
