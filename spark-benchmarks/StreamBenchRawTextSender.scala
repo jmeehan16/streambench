@@ -30,15 +30,17 @@ import org.apache.spark.serializer.KryoSerializer
 /**
  * A helper program that sends blocks of Kryo-serialized text strings out on a socket at a
  * specified rate. Used to feed data into RawInputDStream.
+ *
+ * ./run-example org.apache.spark.streaming.examples.StreamBenchRawTextSender 9999 "../git/streambench/tcp-generator/sample.txt" 10`
  */
 object StreamBenchRawTextSender extends Logging {
   def main(args: Array[String]) {
-    if (args.length != 4) {
-      System.err.println("Usage: StreamBenchRawTextSender <port> <file> <blockSize> <waitTime>")
+    if (args.length != 3) {
+      System.err.println("Usage: StreamBenchRawTextSender <port> <file> <waitTime>")
       System.exit(1)
     }
     // Parse the arguments using a pattern match
-    val Array(IntParam(port), file, IntParam(blockSize), IntParam(waitTime)) = args
+    val Array(IntParam(port), file, IntParam(waitTime)) = args
 
     // Repeat the input data multiple times to fill in a buffer
     val lines = Source.fromFile(file).getLines().toArray
@@ -55,10 +57,11 @@ object StreamBenchRawTextSender extends Logging {
     val out = new PrintStream(socket.getOutputStream())
     while(true) {
       try {
-        for (val line <- lines) {
-          out.println(System.currentTimeMillis + " " + line)
+        for (line <- lines) {
+          out.println("TS" + System.currentTimeMillis + " " + line)
+          //System.out.println("TS" + System.currentTimeMillis + " " + line)
           out.flush();
-          Thread.sleep(waitTime)
+          //Thread.sleep(waitTime)
         }
       } catch {
         case e: IOException =>
