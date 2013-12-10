@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.Random;
 
@@ -30,15 +31,20 @@ public class SentenceCatcherSpout extends BaseRichSpout {
 		  this.host = host;
 		  this.port = port;
 		  _rand = new Random();
+		  System.out.println("CONSTRUCTOR");
 		  
 		  try {
+			  System.out.println("CREATING SOCKET");
 			  clientSocket = new Socket(host, port);
+			  System.out.println("CREATING BUFFERED READER");
 			  in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			  System.out.println("CREATED BUFFERED READER");
 		  }
 		  catch(IOException e) {
 			  System.err.println("Unable to connect to " + host + ":" + port);
 			  System.exit(-1);
 		  }
+		  System.out.println("in: " + in.toString());
 	  }
 
 	  @Override
@@ -53,15 +59,30 @@ public class SentenceCatcherSpout extends BaseRichSpout {
 		//String[] sentences = new String[]{ "the cow jumped over the moon", "an apple a day keeps the doctor away",
 		//        "four score and seven years ago", "snow white and the seven dwarfs", "i am at two with nature" };
 		//String sentence = sentences[_rand.nextInt(sentences.length)];
-		
-		
+		if(in == null)
+		{
+			System.out.println("NULL IN");
+			try {
+				clientSocket = new Socket(host, port);
+				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 		try {
+			assert(in != null);
 			sentence = in.readLine();
 		} catch (IOException e) {
 			_collector.emit(new Values(""));
 			//System.out.println("NEXT TUPLE BREAK");
 			//e.printStackTrace();
 		}
+
 	    _collector.emit(new Values(sentence));
 	  }
 

@@ -90,8 +90,8 @@ public class StreamBenchWordCountTopology {
 	
 	TopologyBuilder builder = new TopologyBuilder();
 	
-	//builder.setSpout("spout", new SentenceCatcherSpout(host, port), 1);
-	builder.setSpout("spout", new RandomSentenceSpout(), 5);
+	builder.setSpout("spout", new SentenceCatcherSpout(host, port), 1);
+	//builder.setSpout("spout", new RandomSentenceSpout(), 5);
 	
 	builder.setBolt("split", new SplitSentence(), 8).shuffleGrouping("spout");
 	//RollingCountBolt(1 sec window, emit every 1 sec)
@@ -100,7 +100,7 @@ public class StreamBenchWordCountTopology {
 	builder.setBolt("print", new PrinterBolt()).shuffleGrouping("windowcount");
 	
 	Config conf = new Config();
-	//conf.setDebug(true);
+	conf.setDebug(true);
 	
 	/**
 	if (args != null && args.length > 0) {

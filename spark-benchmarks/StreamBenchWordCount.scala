@@ -48,7 +48,7 @@ object StreamBenchWordCount {
 
   def main(args: Array[String]) {
     if (args.length < 3) {
-      System.err.println("Usage: NetworkWordCount2 <master> <hostname> <port>\n" +
+      System.err.println("Usage: StreamBenchWordCount <master> <hostname> <port>\n" +
         "In local mode, <master> should be 'local[n]' with n > 1")
       System.exit(1)
     }
