@@ -26,6 +26,7 @@ import scala.io._
 import java.io._
 import java.net._
 import org.apache.spark.serializer.KryoSerializer
+import java.lang.Double
 
 /**
  * A helper program that sends blocks of Kryo-serialized text strings out on a socket at a
@@ -35,12 +36,12 @@ import org.apache.spark.serializer.KryoSerializer
  */
 object StreamBenchRawTextSender extends Logging {
   def main(args: Array[String]) {
-    if (args.length != 3) {
-      System.err.println("Usage: StreamBenchRawTextSender <port> <file> <waitTime>")
+    if (args.length != 4) {
+      System.err.println("Usage: StreamBenchRawTextSender <port> <file> <waitTime> <waitTimeNS>")
       System.exit(1)
     }
     // Parse the arguments using a pattern match
-    val Array(IntParam(port), file, IntParam(waitTime)) = args
+    val Array(IntParam(port), file, IntParam(waitTime), IntParam(waitTimeNS)) = args
 
     // Repeat the input data multiple times to fill in a buffer
     val lines = Source.fromFile(file).getLines().toArray
@@ -51,7 +52,6 @@ object StreamBenchRawTextSender extends Logging {
 
     val serverSocket = new ServerSocket(port)
     logInfo("Listening on port " + port)
-
     
     val socket = serverSocket.accept()
     val out = new PrintStream(socket.getOutputStream())
@@ -61,7 +61,7 @@ object StreamBenchRawTextSender extends Logging {
           out.println("TS" + System.currentTimeMillis + " " + line)
           //System.out.println("TS" + System.currentTimeMillis + " " + line)
           out.flush();
-          //Thread.sleep(waitTime)
+          Thread.sleep(waitTime, waitTimeNS)
         }
       } catch {
         case e: IOException =>
