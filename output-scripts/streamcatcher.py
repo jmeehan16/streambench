@@ -42,7 +42,8 @@ def main(args):
     data = conn.recv(BUFFER_SIZE)
     if not data:
       continue
-
+    
+    print data
     fd.write(data)
 
   s.close()

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="SBViewSource">
+	</section>
+	<section name="NewStreamBaseProjectWizard">
+		<section name="NewStreamBaseProjectPage">
+			<item value="true" key="AddSBClient.AddTestSupport"/>
+			<item value="false" key="CreateProjectConfigFile"/>
+			<item value="false" key="CreateEventFlowFile.Open"/>
+			<item value="false" key="CreateProjectConfigFile.Populate"/>
+			<item value="true" key="AddSBClient"/>
+			<item value="true" key="CreateEventFlowFile"/>
+		</section>
+	</section>
+</section>

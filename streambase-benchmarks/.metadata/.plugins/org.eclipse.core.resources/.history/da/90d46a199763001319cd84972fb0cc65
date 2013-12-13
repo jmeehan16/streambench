@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<modify version="7.3.8">
+    <add generator="gui">
+        <annotations>
+            <annotation name="hygienic"/>
+        </annotations>
+        <box name="TextBiDirectionalSocket" type="inputadapter">
+            <output port="1" stream="out:TextBiDirectionalSocket_1"/>
+            <param name="start:state" value="true"/>
+            <param name="javaclass" value="com.streambase.sb.adapter.bidirectionalsocket.input.BiDirectionalSocketReader"/>
+            <param name="ConnectAtStartup" value="true"/>
+            <param name="DataTransformer" value="com.streambase.sb.adapter.bidirectionalsocket.transform.SerializedTupleDataTransformer"/>
+            <param name="EnableControlPort" value="false"/>
+            <param name="EnableStatusPort" value="false"/>
+            <param name="Host" value="localhost"/>
+            <param name="LogLevel" value="INFO"/>
+            <param name="MaxConnectionCount" value="10"/>
+            <param name="Port" value="9999"/>
+            <param name="ReconnectCount" value="0"/>
+            <param name="ServerMode" value="false"/>
+            <param name="SocketIdentifierFieldName" value="SocketIdentifier"/>
+            <param name="StartServerAtStartup" value="true"/>
+            <param name="TimeoutPeriod" value="5"/>
+            <param name="outputSchema" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;schema name=&quot;schema:TextBiDirectionalSocket&quot;&gt;&#10;    &lt;field description=&quot;&quot; name=&quot;sentence&quot; type=&quot;string&quot;/&gt;&#10;&lt;/schema&gt;&#10;"/>
+        </box>
+        <box name="LocalTimeCopy" type="map">
+            <property name="description" value="The operator adds a single field &quot;LocalTime&quot; that has the current time in it. &#13;&#10;"/>
+            <input port="1" stream="out:TextBiDirectionalSocket_1"/>
+            <output port="1" stream="out:LocalTimeCopy_1"/>
+            <target-list>
+                <item name="input" selection="all"/>
+                <expressions>
+                    <include field="LocalTime">now()</include>
+                </expressions>
+            </target-list>
+        </box>
+        <box name="SplitSentence" type="map">
+            <input port="1" stream="out:LocalTimeCopy_1"/>
+            <output port="1" stream="out:SplitSentence_1"/>
+            <target-list>
+                <item name="input" selection="all">
+                    <remove field="sentence"/>
+                </item>
+                <expressions>
+                    <include field="word">split(sentence, " ")</include>
+                    <include field="count">1</include>
+                </expressions>
+            </target-list>
+        </box>
+        <box name="Aggregate" type="aggregate">
+            <input port="1" stream="out:SplitSentence_1"/>
+            <output port="1" stream="out:Aggregate_1"/>
+            <param name="dimension-name.0" value="Dimension1"/>
+            <param name="dimension-type.0" value="Time"/>
+            <param name="dimension-advance.0" value="1"/>
+            <param name="dimension-partial.0" value="no"/>
+            <param name="dimension-size.0" value="1"/>
+            <param name="dimension-emit-close-first.0" value="false"/>
+            <param name="output-group-by" value="true"/>
+            <target-list>
+                <expressions>
+                    <include field="totalCount">sum(count)</include>
+                </expressions>
+            </target-list>
+            <param name="group-by-name.0" value="word"/>
+            <param name="group-by.0" value="word"/>
+        </box>
+        <box name="BiDirectionalSocketWriter" type="outputadapter">
+            <input port="1" stream="out:Aggregate_1"/>
+            <param name="start:state" value="true"/>
+            <param name="javaclass" value="com.streambase.sb.adapter.bidirectionalsocket.output.BiDirectionalSocketWriter"/>
+            <param name="ConnectAtStartup" value="true"/>
+            <param name="DataTransformer" value="com.streambase.sb.adapter.bidirectionalsocket.transform.SerializedTupleDataTransformer"/>
+            <param name="EnableControlPort" value="false"/>
+            <param name="EnableStatusPort" value="false"/>
+            <param name="Host" value="localhost"/>
+            <param name="LogLevel" value="INFO"/>
+            <param name="MaxConnectionCount" value="10"/>
+            <param name="Port" value="3333"/>
+            <param name="ReconnectCount" value="0"/>
+            <param name="ServerMode" value="false"/>
+            <param name="SocketIdentifierFieldName" value="word"/>
+            <param name="StartServerAtStartup" value="true"/>
+            <param name="TimeoutPeriod" value="5"/>
+            <param name="sharedConnections" value="false"/>
+            <param name="sharedConnectionsAdapter" value=""/>
+        </box>
+    </add>
+</modify>

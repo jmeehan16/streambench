@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sbfs:Simulation xmlns:sbfs="http://www.streambase.com/SBFS" Description="Market Feed Demo Simulation">
+  <SimStreams Name="TicksIn">
+    <ProcessingOptions DataRatePerSecond="4.0" DataGenerationMethod="DataFile">
+      <DataSource Name="marketfeed.csv" DataSourceURI="marketfeed.csv"/>
+    </ProcessingOptions>
+    <Schema>
+      <Fields Name="Symbol" DataTypeName="string" FieldLength="25">
+        <Distribution/>
+        <DataSourceMapping/>
+      </Fields>
+      <Fields Name="SourceTimestamp" DataTypeName="timestamp" FieldLength="8">
+        <Distribution/>
+        <DataSourceMapping DestFieldNum="3"/>
+      </Fields>
+      <Fields Name="BidPrice" DataTypeName="double" FieldLength="8">
+        <Distribution/>
+        <DataSourceMapping DestFieldNum="4"/>
+      </Fields>
+      <Fields Name="AskPrice" DataTypeName="double" FieldLength="8">
+        <Distribution/>
+        <DataSourceMapping DestFieldNum="4"/>
+      </Fields>
+      <Fields Name="FeedName" DataTypeName="string" FieldLength="4">
+        <Distribution/>
+        <DataSourceMapping DestFieldNum="10"/>
+      </Fields>
+    </Schema>
+  </SimStreams>
+</sbfs:Simulation>

@@ -1,0 +1,44 @@
+-- Create an input stream for ticks.
+CREATE INPUT STREAM TicksIn (
+	Symbol string,
+	SourceTimestamp timestamp,
+	BidPrice string,
+	AskPrice string,
+	FeedName string
+);
+
+-- Create an intermediate stream that adds the local time. 
+-- This parallels the map operator in sbapp world.
+CREATE STREAM TicksWithTime AS
+	SELECT *, now() AS LocalTime FROM TicksIn;
+
+-- Create an aggregate stream that parallels the aggregate operator 
+-- as a one-second window over the LocalTime field.
+CREATE STREAM TicksPerSecond AS
+	SELECT openval() AS StartOfTimeSlice, count() AS
+	NumberTicks,FeedName
+	FROM TicksWithTime [SIZE 1 ON LocalTime PARTITION BY FeedName]
+	GROUP BY FeedName;
+
+-- This block combines an output stream and aggregate into one statement. 
+-- It makes a 20 second overlapping window on the StartOfTimeSlice 
+-- grouped by FeedName.
+CREATE OUTPUT STREAM TickStats AS
+	SELECT openval() AS StartOfTimeSlice,
+	avg(NumberTicks) AS AvgTicksPerSecond,
+	stdev(NumberTicks) AS StdevTicksPerSecond,
+	lastval(NumberTicks) AS LastTicksPerSecond,
+	FeedName
+	FROM TicksPerSecond [SIZE 20 ADVANCE 1 ON StartOfTimeSlice
+	PARTITION BY FeedName]
+	GROUP BY FeedName;
+
+-- Adds the AlertThreshold field to the stream. 
+-- This parallels adding a field using a map operator.
+CREATE STREAM SetThreshold AS
+	SELECT *,.75 AS AlertThreshold FROM TickStats;
+
+-- Combine a filter and output stream using the Where clause to find ticks that are 
+-- less than a certain threshold.
+CREATE OUTPUT STREAM TickFallOffAlert AS
+	SELECT * FROM SetThreshold WHERE LastTicksPerSecond < AvgTicksPerSecond * AlertThreshold;

@@ -1,0 +1,4 @@
+com.streambase.sb.ide.core.editors.SBConfEditor.internal.delegateSaveAs=true
+com.streambase.sb.ide.core.editors.SSQLEditor.internal.delegateSaveAs=true
+eclipse.preferences.version=1
+overviewRuler_migration=migrated_3.1

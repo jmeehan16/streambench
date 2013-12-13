@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<application-layout>
+    <component name="TextBiDirectionalSocket">
+        <param name="gui:x" value="-283.0"/>
+        <param name="gui:y" value="-31.0"/>
+        <param name="gui:width" value="62.0"/>
+        <param name="gui:height" value="62.0"/>
+        <param name="gui:columnwidths" value="85,456"/>
+    </component>
+    <component name="LocalTimeCopy">
+        <param name="gui:x" value="-174.0"/>
+        <param name="gui:y" value="-31.0"/>
+        <param name="gui:width" value="62.0"/>
+        <param name="gui:height" value="62.0"/>
+    </component>
+    <component name="WordCountOutCopy">
+        <param name="gui:x" value="-141.0"/>
+        <param name="gui:y" value="96.0"/>
+        <param name="gui:width" value="62.0"/>
+        <param name="gui:height" value="62.0"/>
+    </component>
+    <component name="SplitSentence">
+        <param name="gui:x" value="-55.0"/>
+        <param name="gui:y" value="-30.0"/>
+        <param name="gui:width" value="62.0"/>
+        <param name="gui:height" value="62.0"/>
+    </component>
+    <component name="WordCountOutCopy2">
+        <param name="gui:x" value="-25.0"/>
+        <param name="gui:y" value="96.0"/>
+        <param name="gui:width" value="62.0"/>
+        <param name="gui:height" value="62.0"/>
+    </component>
+    <component name="Aggregate">
+        <param name="gui:x" value="52.0"/>
+        <param name="gui:y" value="-30.0"/>
+        <param name="gui:width" value="62.0"/>
+        <param name="gui:height" value="62.0"/>
+        <param name="gui:columnwidths" value="279,184"/>
+    </component>
+    <component name="WordCountOutCopy3">
+        <param name="gui:x" value="94.0"/>
+        <param name="gui:y" value="96.0"/>
+        <param name="gui:width" value="62.0"/>
+        <param name="gui:height" value="62.0"/>
+    </component>
+    <component name="BiDirectionalSocketWriter">
+        <param name="gui:x" value="221.0"/>
+        <param name="gui:y" value="-31.0"/>
+        <param name="gui:width" value="62.0"/>
+        <param name="gui:height" value="62.0"/>
+        <param name="gui:columnwidths" value="278,185"/>
+    </component>
+    <component name="WordCountOut">
+        <param name="gui:x" value="221.0"/>
+        <param name="gui:y" value="96.0"/>
+        <param name="gui:width" value="62.0"/>
+        <param name="gui:height" value="62.0"/>
+    </component>
+</application-layout>
