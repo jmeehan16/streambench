@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbfs:Simulation xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:sbfs="http://www.streambase.com/schemas/feedsim/02/SBFS">
+  <SimStreams Name="InputStream">
+    <ProcessingOptions DataGenerationMethod="DataFile" DataGenRateMethod="AsFastAsPossible" PrefillTupleBuffer="true" LoopOnTupleBuffer="true">
+      <DataSource Name="DataSource" DataSourceURI="sample.txt" FieldDelimiter="92" QuoteChar="34"/>
+    </ProcessingOptions>
+    <Schema>
+      <Fields Name="sentence" DataTypeName="string" Description="">
+        <DataSourceMapping/>
+      </Fields>
+    </Schema>
+  </SimStreams>
+</sbfs:Simulation>

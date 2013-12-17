@@ -31,7 +31,7 @@ import scala.io._
  *
  * To run this on your local machine, you need to first run a Netcat server
  *    `$ nc -lk 9999`
- * and then run the example
+ * and then run the exampl
  *    `$ ./run-example org.apache.spark.streaming.examples.StreamBenchWordCountAgg local[2] localhost 9999`
  */
 object StreamBenchWordCountAgg {
@@ -78,10 +78,11 @@ object StreamBenchWordCountAgg {
     val wordCounts = words.map(x => (x, 1)).reduceByKey(_ + _)
     val tsTuples = words.filter(x => x contains "TS");
     //val numTuples = 
-    tsTuples.count().print()
+    
     //val avgLatency = tsTuples.foreach(x =>    System.currentTimeMillis)
 
     //wordCounts.foreach(x => sendWords(x.collect(),out))
+    tsTuples.count().print()
     //wordCounts.foreach(x => calculateAgg(x)))
     
     //numTuples.reduce(_ + _).print()

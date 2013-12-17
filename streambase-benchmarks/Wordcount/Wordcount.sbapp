@@ -7,45 +7,39 @@
         <schema name="schema:InputStream">
             <field description="" name="sentence" type="string"/>
         </schema>
-        <box name="InputSocketReader" type="inputadapter">
-            <output port="1" stream="out:InputSocketReader_1"/>
+        <box name="BiDirectionalCSVSocketReader" type="inputadapter">
+            <output port="1" stream="out:BiDirectionalCSVSocketReader_1"/>
             <param name="start:state" value="true"/>
-            <param name="javaclass" value="com.streambase.sb.adapter.bidirectionalsocket.input.BiDirectionalSocketReader"/>
+            <param name="javaclass" value="com.streambase.sb.adapter.bidirectionalsocket.input.BiDirectionalCSVSocketReader"/>
+            <param name="BufferSize" value="102400000"/>
+            <param name="CaptureTransformStrategy" value="FLATTEN"/>
+            <param name="Charset" value=""/>
             <param name="ConnectAtStartup" value="true"/>
-            <param name="DataTransformer" value="com.streambase.sb.adapter.bidirectionalsocket.transform.SerializedTupleDataTransformer"/>
+            <param name="Delimiter" value="|"/>
+            <param name="DiscardEmptyRecords" value="true"/>
             <param name="EnableControlPort" value="false"/>
             <param name="EnableStatusPort" value="false"/>
             <param name="Host" value="localhost"/>
             <param name="LogLevel" value="INFO"/>
             <param name="MaxConnectionCount" value="10"/>
             <param name="Port" value="9999"/>
+            <param name="QuoteChar" value="^"/>
             <param name="ReconnectCount" value="0"/>
             <param name="ServerMode" value="false"/>
             <param name="SocketIdentifierFieldName" value="SocketIdentifier"/>
             <param name="StartServerAtStartup" value="true"/>
             <param name="TimeoutPeriod" value="5"/>
-            <param name="outputSchema" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;schema name=&quot;schema:InputSocketReader&quot;&gt;&#10;    &lt;field description=&quot;&quot; name=&quot;sentence&quot; type=&quot;string&quot;/&gt;&#10;&lt;/schema&gt;&#10;"/>
+            <param name="TimestampFormat" value="yyyy-MM-dd hh:mm:ss.SSSZ"/>
+            <param name="UseDefaultCharset" value="true"/>
+            <param name="incompleteRecordsMode" value="Discard"/>
+            <param name="lenientTimestampParsing" value="true"/>
+            <param name="logWarningForIncomplete" value="false"/>
+            <param name="outputSchema" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;schema name=&quot;schema:BiDirectionalCSVSocketReader&quot;&gt;&#10;    &lt;field description=&quot;&quot; name=&quot;sentence&quot; type=&quot;string&quot;/&gt;&#10;&lt;/schema&gt;&#10;"/>
         </box>
         <stream disabled="true" name="InputStream" schema="schema:InputStream">
         </stream>
-        <box name="NumTuples" type="aggregate">
-            <input port="1" stream="out:InputSocketReader_1"/>
-            <output port="1" stream="throughput"/>
-            <param name="dimension-name.0" value="Dimension1"/>
-            <param name="dimension-type.0" value="Time"/>
-            <param name="dimension-advance.0" value="1"/>
-            <param name="dimension-partial.0" value="no"/>
-            <param name="dimension-size.0" value="1"/>
-            <param name="dimension-emit-close-first.0" value="false"/>
-            <param name="output-group-by" value="true"/>
-            <target-list>
-                <expressions>
-                    <include field="*">count(*)</include>
-                </expressions>
-            </target-list>
-        </box>
         <box name="SplitSentence" type="map">
-            <input port="1" stream="out:InputSocketReader_1"/>
+            <input port="1" stream="out:BiDirectionalCSVSocketReader_1"/>
             <output port="1" stream="out:SplitSentence_1"/>
             <target-list>
                 <item name="input" selection="all">
@@ -58,17 +52,14 @@
             </target-list>
         </box>
         <box name="Iterate" type="iterate">
-            <input disabled="true" port="1" stream="out:SplitSentence_1"/>
+            <input port="1" stream="out:SplitSentence_1"/>
             <output port="1" stream="out:Iterate_1"/>
             <param name="iterate-expr" value="words"/>
             <param name="iterate-name" value="word"/>
         </box>
-        <output-stream disabled="true" name="throughput">
-            <property name="description" value="This stream provides statistics on the feeds that could be used by a client application to visualize the feed health. &#13;&#10;"/>
-        </output-stream>
         <box name="Aggregate" type="aggregate">
-            <input disabled="true" port="1" stream="out:Iterate_1"/>
-            <output port="1" stream="OutputStream"/>
+            <input port="1" stream="out:Iterate_1"/>
+            <output port="1" stream="out:Aggregate_1"/>
             <param name="dimension-name.0" value="Dimension1"/>
             <param name="dimension-type.0" value="Time"/>
             <param name="dimension-advance.0" value="1"/>
@@ -84,7 +75,64 @@
             <param name="group-by-name.0" value="word"/>
             <param name="group-by.0" value="word"/>
         </box>
-        <output-stream disabled="true" name="OutputStream">
-        </output-stream>
+        <box name="TSFilter" type="filter">
+            <input port="1" stream="out:Aggregate_1"/>
+            <output port="1" stream="out:TSFilter_1"/>
+            <param name="autogen-nomatch-port" value="false"/>
+            <param name="expression.0" value="startswith(word,'TS')"/>
+        </box>
+        <box name="NumTuples" type="aggregate">
+            <input port="1" stream="out:TSFilter_1"/>
+            <output port="1" stream="out:NumTuples_1"/>
+            <param name="dimension-name.0" value="Dimension1"/>
+            <param name="dimension-type.0" value="Time"/>
+            <param name="dimension-advance.0" value="1"/>
+            <param name="dimension-partial.0" value="no"/>
+            <param name="dimension-size.0" value="1"/>
+            <param name="dimension-emit-close-first.0" value="false"/>
+            <param name="output-group-by" value="true"/>
+            <target-list>
+                <expressions>
+                    <include field="*">count(*)</include>
+                </expressions>
+            </target-list>
+        </box>
+        <box name="AddTimestamp" type="map">
+            <input port="1" stream="out:NumTuples_1"/>
+            <output port="1" stream="out:AddTimestamp_1"/>
+            <target-list>
+                <item name="input" selection="all"/>
+                <expressions>
+                    <include field="timestamp">now()</include>
+                </expressions>
+            </target-list>
+        </box>
+        <box name="throughputCSV" type="outputadapter">
+            <input port="1" stream="out:AddTimestamp_1"/>
+            <param name="start:state" value="true"/>
+            <param name="javaclass" value="com.streambase.sb.adapter.bidirectionalsocket.output.BiDirectionalCSVSocketWriter"/>
+            <param name="BufferSize" value="10240"/>
+            <param name="CaptureTransformStrategy" value="FLATTEN"/>
+            <param name="Charset" value=""/>
+            <param name="ConnectAtStartup" value="true"/>
+            <param name="Delimiter" value=":"/>
+            <param name="EnableControlPort" value="false"/>
+            <param name="EnableStatusPort" value="false"/>
+            <param name="Host" value="localhost"/>
+            <param name="LogLevel" value="INFO"/>
+            <param name="MaxConnectionCount" value="10"/>
+            <param name="NullValueRepresentation" value="null"/>
+            <param name="Port" value="3333"/>
+            <param name="QuoteChar" value="&quot;"/>
+            <param name="ReconnectCount" value="0"/>
+            <param name="ServerMode" value="false"/>
+            <param name="SocketIdentifierFieldName" value=""/>
+            <param name="StartServerAtStartup" value="true"/>
+            <param name="StringQuote" value="Quote if necessary"/>
+            <param name="TimeoutPeriod" value="5"/>
+            <param name="UseDefaultCharset" value="true"/>
+            <param name="sharedConnections" value="false"/>
+            <param name="sharedConnectionsAdapter" value=""/>
+        </box>
     </add>
 </modify>

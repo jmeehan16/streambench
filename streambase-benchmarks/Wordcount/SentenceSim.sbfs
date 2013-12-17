@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbfs:Simulation xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:sbfs="http://www.streambase.com/schemas/feedsim/02/SBFS">
   <SimStreams Name="SentenceSim">
-    <ProcessingOptions UseFirstValueAsStartTime="true" DataGenerationMethod="DataFile" TimeSynchronized="true">
+    <ProcessingOptions DataGenerationMethod="DataFile" DataGenRateMethod="AsFastAsPossible">
       <DataSource Name="DataSource" DataSourceURI="sample.txt" FieldDelimiter="92" QuoteChar="34"/>
     </ProcessingOptions>
     <Schema>

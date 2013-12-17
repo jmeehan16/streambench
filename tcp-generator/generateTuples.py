@@ -5,9 +5,10 @@ This program only generates the 'sentence' portion of the tuple
 """
 import random as r
 import argparse
+import unicodedata
 
 # The minimum number of words allowed per line
-WORD_COUNT_MIN = 10
+WORD_COUNT_MIN = 500
 
 def main(args):
     fd = open(args.input, 'r')
@@ -18,9 +19,9 @@ def main(args):
     for i in xrange(args.samples): 
         curr_sentence = ""
         while len(curr_sentence.split(" ")) < WORD_COUNT_MIN:
-            idx = r.randint(1,total_sentences)
-            curr_sentence = sentences[idx] #includes a '\n'
-        fdt.write(curr_sentence)
+            idx = r.randint(1,total_sentences-1)
+            curr_sentence += sentences[idx].strip() #does not include a '\n'
+        fdt.write(curr_sentence + '\n')
 
     fdt.close()
 

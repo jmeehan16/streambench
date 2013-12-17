@@ -37,11 +37,11 @@ import java.lang.Double
 object StreamBenchRawTextSender extends Logging {
   def main(args: Array[String]) {
     if (args.length != 4) {
-      System.err.println("Usage: StreamBenchRawTextSender <port> <file> <waitTime> <waitTimeNS>")
+      System.err.println("Usage: StreamBenchRawTextSender <port> <file> <waitTime> <runsPerWait>")
       System.exit(1)
     }
     // Parse the arguments using a pattern match
-    val Array(IntParam(port), file, IntParam(waitTime), IntParam(waitTimeNS)) = args
+    val Array(IntParam(port), file, IntParam(waitTime), IntParam(runsPerWait)) = args
 
     // Repeat the input data multiple times to fill in a buffer
     val lines = Source.fromFile(file).getLines().toArray
@@ -52,8 +52,11 @@ object StreamBenchRawTextSender extends Logging {
 
     val serverSocket = new ServerSocket(port)
     logInfo("Listening on port " + port)
+
+    
     
     val socket = serverSocket.accept()
+    var runs = 0
     val out = new PrintStream(socket.getOutputStream())
     while(true) {
       try {
@@ -61,7 +64,10 @@ object StreamBenchRawTextSender extends Logging {
           out.println("TS" + System.currentTimeMillis + " " + line)
           //System.out.println("TS" + System.currentTimeMillis + " " + line)
           out.flush();
-          Thread.sleep(waitTime, waitTimeNS)
+          runs= runs + 1;
+          if(runs%runsPerWait == 0) {
+            Thread.sleep(waitTime)
+          }
         }
       } catch {
         case e: IOException =>
