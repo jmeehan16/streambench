@@ -11,6 +11,9 @@ streamcatcher.py
 tupleGeneratorServerTime.py
 	python tupleGeneratorServerTime.py -i 'sample.txt' -s 'localhost' -p 9999 -w 10 -t 30 -c 'localhost'
 
+OR	./run-example org.apache.spark.streaming.examples.StreamBenchRawTextSender 9999 /home/john/git/streambench/tcp-generat/sample-500words.txt 1 100
+
+
 Spark!
 	./run-example org.apache.spark.streaming.examples.StreamBenchWordCount local[2] localhost 9999
 
