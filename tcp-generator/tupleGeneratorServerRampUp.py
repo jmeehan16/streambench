@@ -41,7 +41,7 @@ def main(args):
                 sent_tuples.append(ts)
                 i += 1
                 window_sent += 1
-        print "Average Sending Throughput %0.4f tuples/sec" % (window_sent / (now-start))
+        print "%0.4f Average Sending Throughput %0.4f tuples/sec" % (time.time(), (window_sent / (now-start)))
 
     conn.close()
     s.close()
