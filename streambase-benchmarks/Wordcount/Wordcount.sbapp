@@ -94,6 +94,7 @@
             <target-list>
                 <expressions>
                     <include field="*">count(*)</include>
+                    <include field="minTS">min(long(replace(word,"TS-","")))</include>
                 </expressions>
             </target-list>
         </box>
@@ -103,7 +104,9 @@
             <target-list>
                 <item name="input" selection="all"/>
                 <expressions>
-                    <include field="timestamp">now()</include>
+                    <include field="curTime">to_milliseconds(now())</include>
+                    <include field="latency">to_milliseconds(now()) - minTS</include>
+                    <remove field="minTS"/>
                 </expressions>
             </target-list>
         </box>
