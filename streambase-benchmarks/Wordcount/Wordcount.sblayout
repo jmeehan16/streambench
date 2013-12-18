@@ -38,20 +38,21 @@
         <param name="gui:columnwidths" value="106,525"/>
     </component>
     <component name="NumTuples">
-        <param name="gui:x" value="174.0"/>
-        <param name="gui:y" value="112.0"/>
+        <param name="gui:x" value="201.0"/>
+        <param name="gui:y" value="66.0"/>
         <param name="gui:width" value="62.0"/>
         <param name="gui:height" value="62.0"/>
+        <param name="gui:columnwidths" value="130,86"/>
     </component>
     <component name="AddTimestamp">
-        <param name="gui:x" value="283.0"/>
-        <param name="gui:y" value="147.0"/>
+        <param name="gui:x" value="304.0"/>
+        <param name="gui:y" value="66.0"/>
         <param name="gui:width" value="62.0"/>
         <param name="gui:height" value="62.0"/>
     </component>
     <component name="throughputCSV">
-        <param name="gui:x" value="429.0"/>
-        <param name="gui:y" value="160.0"/>
+        <param name="gui:x" value="480.0"/>
+        <param name="gui:y" value="-30.0"/>
         <param name="gui:width" value="62.0"/>
         <param name="gui:height" value="62.0"/>
     </component>
