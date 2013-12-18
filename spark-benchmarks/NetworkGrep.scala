@@ -26,6 +26,7 @@ import org.apache.spark.streaming.util.RawTextHelper
 import java.net._
 import java.io._
 import scala.io._
+import scala.math.min
 
 /**
  * Receives text from multiple rawNetworkStreams and counts how many '\n' delimited
@@ -70,10 +71,20 @@ object NetworkGrep {
     //lazy val in = new BufferedSource(socket.getInputStream()).getLines()
     //val out = new PrintStream(socket.getOutputStream())
 
-    val words = union.filter(_.contains("the")).count().foreach(r =>
+    val sentences = union.filter(_.contains("the")).count().foreach(r =>
       println("Grep count: " + r.collect().mkString))
-    val tsTuples = union.filter(x => x contains "TS");
-    tsTuples.count().print()
+    val tsTuples = union.map(x => x.substring(3,16).toLong);
+    val minTS = tsTuples.reduce(min(_,_))
+    val minLatency = minTS.map(x => "Latency: " + (System.currentTimeMillis - x))
+    val minTSstr = minTS.map(x => "TS: " + x)
+    val tupleCount = tsTuples.count().map(x => "Throughput: " + x)
+    val output = minTSstr.union(minLatency)
+    val output2 = output.union(tupleCount)
+
+
+
+
+    output2.print()
 
     ssc.start()
   }

@@ -22,7 +22,7 @@ import org.apache.spark.streaming.StreamingContext._
 import java.net._
 import java.io._
 import scala.io._
-import Math.min
+import scala.math.min
 
 /**
  * Counts words in UTF8 encoded, '\n' delimited text received from the network every second.
@@ -78,16 +78,19 @@ object StreamBenchWordCountAgg {
     val words = union.flatMap(_.split(" "))
     val wordCounts = words.map(x => (x, 1)).reduceByKey(_ + _)
     val tsTuples = words.filter(x => x contains "TS");
-    val minLatency = tsTuples.map(x => (System.currentTimeMillis - x.substring(3).toLong)).reduce(Math.min(_,_))
-    val tupleCount = tsTuples.count()
-    val output = tupleCount.union(minLatency)
+    val minTS = tsTuples.map(x => x.substring(3).toLong).reduce(min(_,_))
+    val minLatency = minTS.map(x => "Latency: " + (System.currentTimeMillis - x))
+    val minTSstr = minTS.map(x => "TS: " + x)
+    val tupleCount = tsTuples.count().map(x => "Throughput: " + x)
+    val output = minTSstr.union(minLatency)
+    val output2 = output.union(tupleCount)
     //val numTuples = 
     
     //val avgLatency = tsTuples.foreach(x =>    System.currentTimeMillis)
 
     //wordCounts.foreach(x => sendWords(x.collect(),out))
     //tsTuples.count().print()
-    output.print()
+    output2.print()
     //wordCounts.foreach(x => calculateAgg(x)))
     
     //numTuples.reduce(_ + _).print()
