@@ -1,9 +1,0 @@
-\begin{thebibliography}{1}
-
-\bibitem{dstreams}
-M.~Zaharia, T.~Das, H.~Li, T.~Hunter, S.~Shenker, and I.~Stoica.
-\newblock Discretized streams: Fault-tolerant streaming computation at scale.
-\newblock In {\em Proceedings of the Twenty-Fourth ACM Symposium on Operating
-  Systems Principles}, SOSP '13, pages 423--438, New York, NY, USA, 2013. ACM.
-
-\end{thebibliography}
