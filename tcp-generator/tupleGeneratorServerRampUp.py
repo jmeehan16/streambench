@@ -31,7 +31,7 @@ def main(args):
         wait_time = p['wait_time'] / 1000.0 #convert ms->s
         batch_size = p['batch_size']
         window_sent = 0
-        print "Sending %d tuples/sec (wt=%0.2f, bs=%d)" % (tput, wait_time, batch_size)
+        print "Sending %d tuples/sec (wait_time=%0.2fs, batch_size=%d)" % (tput, wait_time, batch_size)
         while now - start < args.ramp_window:
             time.sleep(wait_time)
             now = time.time()
