@@ -6,10 +6,14 @@ stream_generator: previous project that generates tcp-based tuples
 
 Startup Order:
 streamcatcher.py
-	python streamcatcher.py -s 'localhost' -p 3333 -o 'catcher_data.txt'
+	python dumbstreamcatcher.py -s 'localhost' -p 3333 -o 'catcher_data.txt'
 
 tupleGeneratorServerTime.py
 	python tupleGeneratorServerTime.py -i 'sample.txt' -s 'localhost' -p 9999 -w 10 -t 30 -c 'localhost'
+
+OR
+	python tupleGeneratorServerRampUp.py -i 'sample1000.txt' -s 'localhost' -p 9999 --lower_tput 100 --upper_tput 500 --step_size 100 --ramp_window 30
+
 
 OR	./run-example org.apache.spark.streaming.examples.StreamBenchRawTextSender 9999 /home/john/git/streambench/tcp-generat/sample-500words.txt 1 100
 
