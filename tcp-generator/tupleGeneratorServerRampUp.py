@@ -24,7 +24,6 @@ def main(args):
 
     i = 0
     for tput in xrange(args.lower_tput, args.upper_tput, args.step_size):
-        now = start
         window_sent = 0
         p = cp.calc_parameters(tput)
         wait_time = p['wait_time'] / 1000.0 #convert ms->s
@@ -32,6 +31,7 @@ def main(args):
         window_sent = 0
         print "Sending %d tuples/sec (wait_time=%0.2f ms, batch_size=%d)" % (tput, wait_time*1000, batch_size)
         start = time.time()
+        now = start
         while now - start < args.ramp_window:
             time.sleep(wait_time)
             now = time.time()
