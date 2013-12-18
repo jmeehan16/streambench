@@ -57,10 +57,10 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--input', help='Input file name for tuple data', required=True)
     parser.add_argument('-s', '--server_host', help='Address of SDMBS to send tuples to', required=False, default='localhost')
     parser.add_argument('-p', '--server_port', help='Port of SDMBS to send tuples to', required=False, default=9999, type=int)
-    parser.add_argument('-w', '--window_time', help='Window time (sec) to wait between ramp ups', required=True, type=int, default=30)
+    parser.add_argument('-wnd', '--window_time', help='Window time (sec) to wait between ramp ups', required=True, type=int, default=30)
     parser.add_argument('-d', '--step_decrease', help='The time (milliseconds) to decrease the wait_time between sends', \
             required=True, type=float)
-    parser.add_argument('-w', '--wait_time', help='The starting time in milliseconds to sleep between sending each tuple group', \
+    parser.add_argument('-wt', '--wait_time', help='The starting time in milliseconds to sleep between sending each tuple group', \
             required=True, type=float, default=10)
     parser.add_argument('-tr', '--total_ramps', help='Total number of ramp ups we want', required=True, type=int)
     parser.add_argument('-b', '--burst_size', help='Number of tuples to sent in a burst before sleeping', required=False, type=int, default=10)
