@@ -52,17 +52,6 @@ def main(args):
         fd.write(st + "\n")
     fd.close()
 
-    start = int(sent_tuples[0].replace("TS-", ""))
-    end = int(sent_tuples[-1].replace("TS-", ""))
-    total = len(sent_tuples)
-
-    # Send test arguments and sentinel to StreamBench catcher
-    print "Sending sentinel!"
-    catcherSocket.send("SENTINEL %.4f %d\n" % (args.wait_time, args.test_time))
-    catcherSocket.close()
-
-    print "Average throughput: %.4f" % (float(total) / (end-start)*1000)
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Read in a tuple data file and send them to a SDBMS')
     parser.add_argument('-i', '--input', help='Input file name for tuple data', required=True)
@@ -73,8 +62,8 @@ if __name__ == '__main__':
             required=True, type=float)
     parser.add_argument('-w', '--wait_time', help='The starting time in milliseconds to sleep between sending each tuple group', \
             required=True, type=float, default=10)
-    parser.add_argument('-tr', '--total_ramps', help='', required=True, type=int)
-    parser.add_argument('-b', '--burst_size', help='', required=False, type=int, default=10)
+    parser.add_argument('-tr', '--total_ramps', help='Total number of ramp ups we want', required=True, type=int)
+    parser.add_argument('-b', '--burst_size', help='Number of tuples to sent in a burst before sleeping', required=False, type=int, default=10)
     args = parser.parse_args()
     
     main(args)
