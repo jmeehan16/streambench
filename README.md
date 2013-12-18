@@ -9,9 +9,7 @@ streamcatcher.py
 	python dumbstreamcatcher.py -s 'localhost' -p 3333 -o 'catcher_data.txt'
 
 tupleGeneratorServerTime.py
-	python tupleGeneratorServerTime.py -i 'sample.txt' -s 'localhost' -p 9999 -w 10 -t 30 -c 'localhost'
 
-OR
 	python tupleGeneratorServerRampUp.py -i 'sample1000.txt' -s 'localhost' -p 9999 --lower_tput 100 --upper_tput 500 --step_size 100 --ramp_window 30
 
 
@@ -24,4 +22,7 @@ Spark!
 Storm!
 	First create the jar file of the project.  Then, from the root Storm directory, use:
 	bin/storm jar teststorm.jar storm.starter.StreamBenchWordCountTopology stream1 localhost 9999
+
+Streambase!
+	sbd Wordcount.sbapp
 

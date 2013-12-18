@@ -38,27 +38,25 @@
         </box>
         <stream disabled="true" name="InputStream" schema="schema:InputStream">
         </stream>
-        <box name="SplitSentence" type="map">
+        <box name="Map" type="map">
             <input port="1" stream="out:BiDirectionalCSVSocketReader_1"/>
-            <output port="1" stream="out:SplitSentence_1"/>
+            <output port="1" stream="out:Map_1"/>
             <target-list>
-                <item name="input" selection="all">
-                    <remove field="sentence"/>
-                </item>
+                <item name="input" selection="all"/>
                 <expressions>
-                    <include field="words">split(sentence, " ")</include>
-                    <include field="count">1</include>
+                    <include field="TS">long(substr(sentence,3,13))</include>
+                    <remove field="sentence"/>
                 </expressions>
             </target-list>
         </box>
-        <box name="Iterate" type="iterate">
-            <input port="1" stream="out:SplitSentence_1"/>
-            <output port="1" stream="out:Iterate_1"/>
-            <param name="iterate-expr" value="words"/>
-            <param name="iterate-name" value="word"/>
+        <box name="theFilter" type="filter">
+            <input port="1" stream="out:BiDirectionalCSVSocketReader_1"/>
+            <output port="1" stream="out:theFilter_1"/>
+            <param name="autogen-nomatch-port" value="false"/>
+            <param name="expression.0" value="contains(sentence, &quot;the&quot;)"/>
         </box>
         <box name="Aggregate" type="aggregate">
-            <input port="1" stream="out:Iterate_1"/>
+            <input port="1" stream="out:theFilter_1"/>
             <output port="1" stream="out:Aggregate_1"/>
             <param name="dimension-name.0" value="Dimension1"/>
             <param name="dimension-type.0" value="Time"/>
@@ -69,20 +67,12 @@
             <param name="output-group-by" value="true"/>
             <target-list>
                 <expressions>
-                    <include field="totalCount">sum(count)</include>
+                    <include field="grepCount">count(sentence)</include>
                 </expressions>
             </target-list>
-            <param name="group-by-name.0" value="word"/>
-            <param name="group-by.0" value="word"/>
-        </box>
-        <box name="TSFilter" type="filter">
-            <input port="1" stream="out:Aggregate_1"/>
-            <output port="1" stream="out:TSFilter_1"/>
-            <param name="autogen-nomatch-port" value="false"/>
-            <param name="expression.0" value="startswith(word,'TS')"/>
         </box>
         <box name="NumTuples" type="aggregate">
-            <input port="1" stream="out:TSFilter_1"/>
+            <input port="1" stream="out:Map_1"/>
             <output port="1" stream="out:NumTuples_1"/>
             <param name="dimension-name.0" value="Dimension1"/>
             <param name="dimension-type.0" value="Time"/>
@@ -93,8 +83,8 @@
             <param name="output-group-by" value="true"/>
             <target-list>
                 <expressions>
-                    <include field="totalCount">sum(totalCount)</include>
-                    <include field="minTS">min(long(replace(word,"TS-","")))</include>
+                    <include field="totalCount">count(TS)</include>
+                    <include field="minTS">min(TS)</include>
                 </expressions>
             </target-list>
         </box>
@@ -108,6 +98,33 @@
                     <include field="latency">to_milliseconds(now()) - minTS</include>
                 </expressions>
             </target-list>
+        </box>
+        <box name="BiDirectionalCSVSocketWriter" type="outputadapter">
+            <input port="1" stream="out:Aggregate_1"/>
+            <param name="start:state" value="true"/>
+            <param name="javaclass" value="com.streambase.sb.adapter.bidirectionalsocket.output.BiDirectionalCSVSocketWriter"/>
+            <param name="BufferSize" value="10240"/>
+            <param name="CaptureTransformStrategy" value="FLATTEN"/>
+            <param name="Charset" value=""/>
+            <param name="ConnectAtStartup" value="true"/>
+            <param name="Delimiter" value=":"/>
+            <param name="EnableControlPort" value="false"/>
+            <param name="EnableStatusPort" value="false"/>
+            <param name="Host" value="localhost"/>
+            <param name="LogLevel" value="INFO"/>
+            <param name="MaxConnectionCount" value="10"/>
+            <param name="NullValueRepresentation" value="null"/>
+            <param name="Port" value="3333"/>
+            <param name="QuoteChar" value="&quot;"/>
+            <param name="ReconnectCount" value="0"/>
+            <param name="ServerMode" value="false"/>
+            <param name="SocketIdentifierFieldName" value=""/>
+            <param name="StartServerAtStartup" value="true"/>
+            <param name="StringQuote" value="Quote if necessary"/>
+            <param name="TimeoutPeriod" value="5"/>
+            <param name="UseDefaultCharset" value="true"/>
+            <param name="sharedConnections" value="false"/>
+            <param name="sharedConnectionsAdapter" value=""/>
         </box>
         <box name="throughputCSV" type="outputadapter">
             <input port="1" stream="out:AddTimestamp_1"/>

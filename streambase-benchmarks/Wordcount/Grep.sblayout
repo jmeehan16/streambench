@@ -1,57 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <application-layout>
     <component name="BiDirectionalCSVSocketReader">
-        <param name="gui:x" value="-511.0"/>
-        <param name="gui:y" value="-28.0"/>
+        <param name="gui:x" value="-429.0"/>
+        <param name="gui:y" value="-85.0"/>
         <param name="gui:width" value="62.0"/>
         <param name="gui:height" value="62.0"/>
     </component>
     <component name="InputStream">
-        <param name="gui:x" value="-518.0"/>
-        <param name="gui:y" value="80.0"/>
+        <param name="gui:x" value="-436.0"/>
+        <param name="gui:y" value="23.0"/>
         <param name="gui:width" value="62.0"/>
         <param name="gui:height" value="62.0"/>
     </component>
-    <component name="SplitSentence">
-        <param name="gui:x" value="-388.0"/>
-        <param name="gui:y" value="39.0"/>
+    <component name="Map">
+        <param name="gui:x" value="-259.0"/>
+        <param name="gui:y" value="-10.0"/>
         <param name="gui:width" value="62.0"/>
         <param name="gui:height" value="62.0"/>
     </component>
-    <component name="Iterate">
-        <param name="gui:x" value="-272.0"/>
-        <param name="gui:y" value="39.0"/>
+    <component name="theFilter">
+        <param name="gui:x" value="-256.0"/>
+        <param name="gui:y" value="-160.0"/>
         <param name="gui:width" value="62.0"/>
         <param name="gui:height" value="62.0"/>
+        <param name="gui:columnwidths" value="113,558"/>
     </component>
     <component name="Aggregate">
-        <param name="gui:x" value="-178.0"/>
-        <param name="gui:y" value="39.0"/>
+        <param name="gui:x" value="-117.0"/>
+        <param name="gui:y" value="-164.0"/>
         <param name="gui:width" value="62.0"/>
         <param name="gui:height" value="62.0"/>
-    </component>
-    <component name="TSFilter">
-        <param name="gui:x" value="-76.0"/>
-        <param name="gui:y" value="39.0"/>
-        <param name="gui:width" value="62.0"/>
-        <param name="gui:height" value="62.0"/>
+        <param name="gui:columnwidths" value="128,86"/>
     </component>
     <component name="NumTuples">
-        <param name="gui:x" value="39.0"/>
-        <param name="gui:y" value="40.0"/>
+        <param name="gui:x" value="-123.0"/>
+        <param name="gui:y" value="-10.0"/>
         <param name="gui:width" value="62.0"/>
         <param name="gui:height" value="62.0"/>
         <param name="gui:columnwidths" value="128,86"/>
     </component>
     <component name="AddTimestamp">
-        <param name="gui:x" value="158.0"/>
-        <param name="gui:y" value="40.0"/>
+        <param name="gui:x" value="15.0"/>
+        <param name="gui:y" value="-9.0"/>
+        <param name="gui:width" value="62.0"/>
+        <param name="gui:height" value="62.0"/>
+    </component>
+    <component name="BiDirectionalCSVSocketWriter">
+        <param name="gui:x" value="95.0"/>
+        <param name="gui:y" value="-160.0"/>
         <param name="gui:width" value="62.0"/>
         <param name="gui:height" value="62.0"/>
     </component>
     <component name="throughputCSV">
-        <param name="gui:x" value="292.0"/>
-        <param name="gui:y" value="41.0"/>
+        <param name="gui:x" value="173.0"/>
+        <param name="gui:y" value="-10.0"/>
         <param name="gui:width" value="62.0"/>
         <param name="gui:height" value="62.0"/>
     </component>
