@@ -6,6 +6,7 @@ Tuple: 'TS1384902645 ID12345 this is a sentence'
 import socket
 import argparse
 import time
+import calc_parameters as cp
 
 sent_tuples = []
 
@@ -19,30 +20,28 @@ def main(args):
     s.listen(1)
 
     conn, addr = s.accept()
-    print 'Connected to Spark:', addr
+    print 'Connected to SDMS:', addr
 
-    # Starting wait time.
-    wait_time_sec = args.wait_time / 1000.0 #convert ms->s
-    wait_time_decrease = args.step_decrease / 1000.0 #convert ms->s
-    i = 0 #total tuples sent
-    ramp_num = 0
-    while ramp_num < args.total_ramps:
+    i = 0
+    for tput in xrange(args.lower_tput, args.upper_tput, args.step_size):
+        print "Sending %d tuples/sec" % tput
         start = time.time()
         now = start
         window_sent = 0
-        while now - start < args.window_time:
-            time.sleep(wait_time_sec) 
+        p = cp.calc_parameters(tput)
+        wait_time = p['wait_time'] / 1000.0 #convert ms->s
+        batch_size = p['batch_size']
+        window_sent = 0
+        while now - start < args.ramp_window:
+            time.sleep(wait_time)
             now = time.time()
-            for k in xrange(args.burst_size):
+            for k in xrange(batch_size):
                 ts = "TS-%d" % int(now*1000)
                 conn.send("%s %s" % (ts, dataset[i % len(dataset)]))
                 sent_tuples.append(ts)
                 i += 1
                 window_sent += 1
-        print "Throughput %0.4f tuples/sec" % (window_sent / (now-start))
-        wait_time_sec -= wait_time_decrease
-        ramp_num += 1
-        print "Starting new window (%d), ramping up throughput!" % ramp_num
+        print "Average Sending Throughput %0.4f tuples/sec" % (window_sent / (now-start))
 
     conn.close()
     s.close()
@@ -57,13 +56,10 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--input', help='Input file name for tuple data', required=True)
     parser.add_argument('-s', '--server_host', help='Address of SDMBS to send tuples to', required=False, default='localhost')
     parser.add_argument('-p', '--server_port', help='Port of SDMBS to send tuples to', required=False, default=9999, type=int)
-    parser.add_argument('-wnd', '--window_time', help='Window time (sec) to wait between ramp ups', required=True, type=int, default=30)
-    parser.add_argument('-d', '--step_decrease', help='The time (milliseconds) to decrease the wait_time between sends', \
-            required=True, type=float)
-    parser.add_argument('-wt', '--wait_time', help='The starting time in milliseconds to sleep between sending each tuple group', \
-            required=True, type=float, default=10)
-    parser.add_argument('-tr', '--total_ramps', help='Total number of ramp ups we want', required=True, type=int)
-    parser.add_argument('-b', '--burst_size', help='Number of tuples to sent in a burst before sleeping', required=False, type=int, default=10)
+    parser.add_argument('-lt', '--lower_tput', help='Starting lower-bound throughput', required=True, type=int)
+    parser.add_argument('-ut', '--upper_tput', help='Final upper-bound throughput', required=True, type=int)
+    parser.add_argument('-ss', '--step_size', help='Step size of increasing throughput', required=True, type=int)
+    parser.add_argument('-rw', '--ramp_window', help='Time in seconds of each ramp window', required=True, type=int)
     args = parser.parse_args()
     
     main(args)
