@@ -6,16 +6,17 @@ As mentioned in section~\ref{ssec:arch-phil}, the ideal cluster for a Spark syst
 Our cluster was limited to four AMD Athlon(tm) 64 X2 Dual Core Processor 3800+ machines, each with 3GB of memory and 2 core, 2Ghz processors.  For our single-node experiments, tuple generation and collection were performed on separate nodes from the actual benchmark in an effort to record more accurate throughput numbers.  However, for Spark clusters of size 2 or more, the tuple generators were run on the same machines as the worker nodes due to a lack of machines.
 
 \subsection{Tuple Generator}
-As briefly mentioned in Section~\ref{ssec:tuple-gen-meth} tuples are defined as a timestamp followed by a sentence of variable number of words.  Generating these tuples is a two-fold process.  First, a sample file of sentences of a specified word count is pre-generated using a python script.  By generating this file ahead of time, we are able to normalize the input sent to both Spark and System-X.
+As briefly mentioned in Section~\ref{ssec:tuple-gen-meth} tuples are defined as a timestamp followed by a sentence of a variable number of words.  Generating these tuples is a two-fold process:  First, a sample file of sentences of a specified word count is pre-generated using a python script.  By generating this file ahead of time, we are able to normalize the input sent to both Spark and System-X.
 
-A second python script then processes our sample file of sentences.  This script prepends a timestamp to the string as the first word.  The timestamp includes of "TS-" in order to distinguish the timestamp from the other words.  The tuples are then sent to the streaming application at a throughput rate specified as an input parameter.  The throughput rate starts small, and gradually increases until the streaming application is saturated and eventually fails.
+A second python script then processes our sample file of sentences and pre-loads it into memory.  This script prepends a timestamp to the string as the first word.  The timestamp includes a prefix of "TS-" in order to distinguish the timestamp from the other words.  The tuples are then sent to the streaming application at a throughput rate specified as an input parameter.  The throughput rate starts small, and gradually increases until the streaming application is saturated and eventually fails.
 
-Initially, the throughput rate on our tuple generator program was simply controlled using the Thread.sleep command.  However, it was discovered that this method is not granular enough to generate tuples at a high enough rate to consistently saturate our systems.  The reason for this is that Thread.sleep is unreliable beyond approximately a 0.1 ms waittime.  This means that the maximum throughput of our generator was about 10,000 tuples.
+Initially, the throughput rate on our tuple generator program was simply controlled using the Thread.sleep command in Python.  However, it was discovered that this method is not granular enough to generate tuples at a high enough rate to consistently saturate our systems.  The reason for this is that Thread.sleep is unreliable beyond approximately a 0.1 ms waittime on the machines we tested.  This means that the maximum throughput of our generator was about 10,000 tuples. We also experimented with the idea of writing a custom C program to generate and send tuples, the sleep and nanosleep calls also were affected by this lower-bound of around 0.1 ms so we did not go down this road further.
 
 Our solution to this problem was to add a second factor, a batch size for
 tuples.  To generate a higher throughput, we choose to send a batch of tuples,
 then wait for a specified amount of time, then send the next batch, and so on.
-The equation used to calculate the optimal batch size and wait time is as follows:
+The equation used to calculate the optimal batch size $B$ and wait time $W$ for a given
+desired throughput $T$ is as follows:
 
 {\large $B = \lfloor\frac{T}{2000}\rfloor - 1$}
 
@@ -23,8 +24,8 @@ We determined what our wait time should be using the following equation:
 
 {\large $W = B * \frac{1000}{T}$}
 
-By plugging the result for $B$ into the first equation, we are able to
-calculate the optimal wait time to generate the desired throughput.\jeff{reference what W,B,T are}
+By plugging the result for $B$ into the second equation, we are able to
+calculate the optimal wait time to generate the desired throughput.
 
 \subsection{Performance Analysis}
 In our original implementation, none of the performance analysis was performed within the streaming system.  Instead, the Wordcount or Grep output was sent to a separate machine, where it would be written to a file and analyzed by a separate script.  This script would calculate throughput and latency numbers by comparing the timestamps within the sentence tuples to the timestamps attached by the streaming system.  While this method did not require additional processing by the system, we found that the act of printing so much information to the TCP output stream was negatively affecting our performance.  We determined that it would be more fair to instead perform the aggregate within the streaming system itself, and only output this number.
