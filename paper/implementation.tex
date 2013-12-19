@@ -12,15 +12,19 @@ A second python script then processes our sample file of sentences.  This script
 
 Initially, the throughput rate on our tuple generator program was simply controlled using the Thread.sleep command.  However, it was discovered that this method is not granular enough to generate tuples at a high enough rate to consistently saturate our systems.  The reason for this is that Thread.sleep is unreliable beyond approximately a 0.1 ms waittime.  This means that the maximum throughput of our generator was about 10,000 tuples.
 
-Our solution to this problem was to add a second factor, a batch size for tuples.  To generate a higher throughput, we choose to send a batch of tuples, then wait for a specified amount of time, then send the next batch, and so on.  The equation used to calculate the optimal wait time and batch size is:
+Our solution to this problem was to add a second factor, a batch size for
+tuples.  To generate a higher throughput, we choose to send a batch of tuples,
+then wait for a specified amount of time, then send the next batch, and so on.
+The equation used to calculate the optimal batch size and wait time is as follows:
 
-\john{equation goes here}
+{\large $B = \lfloor\frac{T}{2000}\rfloor - 1$}
 
-We determined what our batch size should be using the following equation:
+We determined what our wait time should be using the following equation:
 
-\john{equation goes here}
+{\large $W = B * \frac{1000}{T}$}
 
-By plugging the result for {b} into the first equation, we are able to calculate the optimal wait time to generate the desired throughput.
+By plugging the result for $B$ into the first equation, we are able to
+calculate the optimal wait time to generate the desired throughput.\jeff{reference what W,B,T are}
 
 \subsection{Performance Analysis}
 In our original implementation, none of the performance analysis was performed within the streaming system.  Instead, the Wordcount or Grep output was sent to a separate machine, where it would be written to a file and analyzed by a separate script.  This script would calculate throughput and latency numbers by comparing the timestamps within the sentence tuples to the timestamps attached by the streaming system.  While this method did not require additional processing by the system, we found that the act of printing so much information to the TCP output stream was negatively affecting our performance.  We determined that it would be more fair to instead perform the aggregate within the streaming system itself, and only output this number.
