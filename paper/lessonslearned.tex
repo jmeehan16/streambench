@@ -1,0 +1,18 @@
+\section{Lessons Learned}
+During this project, a number of decisions were made that cost the authors a significant amount of time.  If given the opportunity to revisit this project, here is what we would do differently.
+
+\subsection{EC2}
+As mentioned in section \john{section here}, we chose not to use an EC2 cluster for our experiments due to concerns about inconsistent resources in the cloud.  In retrospect, this was a mistake.  The flexibility, additional resources, and ease of setup make EC2 the obvious choice for cluster-based benchmarking needs.  Additional research has also revealed our fears about inconsistent resources were unfounded, as the more expensive EC2 instances provide predictable performance.
+
+\subsection{Tuple Generation}
+When generating tuples, it is necessary to be able to control the number of tuples being produced per second.  We chose to create each tuple as a discrete unit, using Thread.sleep to control the total number of tuples being sent.  The problem with this strategy is that Thread.sleep is documented at being able to sleep for a minimum time of 7 us before the call to the system clock takes longer than the actual sleep time.  In practice, however, we found that Python's sleep call has a minimum sleep time of 100 us, meaning that we were only able to generate 10,000 tuples per second without using other flow control methods.
+
+Sending raw bytes rather than text-based tuples would have been a better strategy, particularly for Spark.  Spark contains a "RateLimitedStream" object, which can generate a stream of data with a limit on the number of bytes per second.  This is an ideal benchmarking tool.  System-X, however, expects tuples to be sent, and thus would have needed to convert the bytes into tuples before processing them.
+
+\subsection{Socket Bottlenecks}
+Our tuple generator was designed with the false assumption that it would reliably generate tuples at the specified rate.  If this were the case, then whenever the system became backlogged, throughput output from the system would remain constant, while the throughput output from the generator would continue increasing.  In addition, an increase in latency would be visible when the system is saturated.
+
+Instead, we found that once the TCP socket buffer is full on the receiver's side, it signals the sender program to stop sending new tuples.  Effectively, this freezes our tuple generator program for a very short period of time, allowing the streaming system to catch up.  As a result of this misunderstanding, calculating the maximum throughput of the system was much more difficult than expected.  We instead ended up using the strategy outlined in section \john{results section}.
+
+\subsection{System-X distributed}
+System-X is advertised as being "distributed system ready."  While this is technically true, there is no method of automating the creation of a distributed workflow, and it must instead be built manually.  Due to licensing issues and time constraints, we were unable to complete a working distributed workflow for System-X for this paper.
