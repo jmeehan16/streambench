@@ -14,7 +14,7 @@ evaluation of the scalability of spark distributed
 \begin{figure}[b]
 \centering
 \includegraphics[width=1\linewidth]{figures/sp1_tput.pdf}
-\caption{Throughput/Time for a single Spark host running word count. We sent 100B tuples at a
+\caption{Throughput/Time for a single Spark host running Wordcount. We sent 100B tuples at a
 slowly ramped up rate from 1K tuples/sec to 30k tuples/sec with a step size of
 500 tuples/sec. The sending rate remained constant for 10 seconds before
 transitioning to the next throughput.}
@@ -37,7 +37,7 @@ Figure~\ref{fig:sp1-tput}.}
 For Spark Streaming we found that our benchmarking methodology finally worked
 fairly decently once we were able to measure throughput, latency and fully
 saturate the system through tuple generation. Figure~\ref{fig:sp1-tput}
-and~\ref{fig:sp1-latency} show the throughput and latency for a word count job. These
+and~\ref{fig:sp1-latency} show the throughput and latency for a Wordcount job. These
 figures show that as the sending rate of the tuple generator increases we
 finally saturate the system around the 450th time step and at 17,500 tuples per
 second. A similar pattern is seen in Figure~\ref{fig:sp1-latency} where around
@@ -59,7 +59,7 @@ there waiting, thus drop its overall throughput.
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/sp2_tput.pdf}
-\caption{Throughput/Time for a single Spark host, running grep. We sent 100B tuples at a
+\caption{Throughput/Time for a single Spark host, running Grep. We sent 100B tuples at a
 slowly ramped up rate from 1K tuples/sec to 30k tuples/sec with a step size of
 500 tuples/sec. The sending rate remained constant for 10 seconds before
 transitioning to the next throughput.}
@@ -79,12 +79,12 @@ Figure~\ref{fig:sb1-tput}.}
 \label{fig:sp2-latency}
 \end{figure}
 
-In addition to the the word count graphs, we also have grep benchmark
+In addition to the the Wordcount graphs, we also have Grep benchmark
 results.  We evaluate the system under the same metric, tuple throughput and
 latency, which can be seen in Figures~\ref{fig:sp2-tput}
 and~\ref{fig:sp2-latency}. We see similar patterns in terms of when the system
 cannot handle any higher tuple throughput, around the 450th time step we see
-the throughput's values oscillate. Similarly to the word count graphs, you can
+the throughput's values oscillate. Similarly to the Wordcount graphs, you can
 see the sending throughput also starts oscillating slightly because of the
 previously mentioned tight relationship between the TCP sender and receiver.
 
@@ -94,19 +94,19 @@ previously mentioned tight relationship between the TCP sender and receiver.
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/sb1_tput.pdf}
-\caption{System-X word count. The black vertical bars represent System-X producing errors relating to it unable to transform the bytes in its internal buffer to a tuple.}
+\caption{System-X Wordcount. The black vertical bars represent System-X producing errors relating to it unable to transform the bytes in its internal buffer to a tuple.}
 \label{fig:sb1-tput}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/sb2_tput.pdf}
-\caption{System-X grep. Around time step 130 System-X froze and would not report anymore results but somehow kept the TCP connection with the tuple generator alive since it was happy to keep receiving tuples but dropping them on the floor.}
+\caption{System-X Grep. Around time step 130 System-X froze and would not report anymore results but somehow kept the TCP connection with the tuple generator alive since it was happy to keep receiving tuples but dropping them on the floor.}
 \label{fig:sb2-tput}
 \end{figure}
 
 Evaluating System-X was tricky, since its processing is much different than
-Spark. We re-created the word count and grep benchmarks in System-X.  They
+Spark. We re-created the Wordcount and Grep benchmarks in System-X.  They
 performed decently, but not nearly as well as Spark. System-X also has a much
 different failure condition. When System-X begins to become over saturated, it
 starts raising buffer exceptions on the client. We noticed various strange behaviors
@@ -128,7 +128,7 @@ and accepts new tuples for some time before quiting.
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/spark-wc-dist.pdf}
-\caption{Spark distributed, word count}
+\caption{Spark distributed, Wordcount}
 \label{fig:spark-wc-dist}
 \end{figure}
 
