@@ -1,9 +1,19 @@
 \section{Results}
 
+Our primary evaluation was on Spark and System-X. Both of these systems were
+mostly evaluated in stand-alone mode because of issues with System-X (further
+discussed in Section~\ref{ssec:sysx-dist}). This section covers the two primary
+benchmarks that we ran on both systems (Sections~\ref{ssec:spark1}
+and~\ref{ssec:sysx1}) and some graphs of our results and lastly covers some
+evaluation of the scalability of spark distributed
+(Section~\ref{ssec:spark-dist1}).
+
+\subsection{Spark}
+\label{ssec:spark1}
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/sp1_tput.pdf}
-%\vspace{-0.3in}
 \caption{Throughput/Time for a single Spark host running word count. We sent 100B tuples at a
 slowly ramped up rate from 1K tuples/sec to 30k tuples/sec with a step size of
 500 tuples/sec. The sending rate remained constant for 10 seconds before
@@ -14,7 +24,6 @@ transitioning to the next throughput.}
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/sp1_latency.pdf}
-%\vspace{-0.3in}
 \caption{Average latency to process tuples for a single Spark host. Similar to
 Figure~\ref{fig:sb1-tput} we sent 100B tuples at a slowly ramped up rate from 1K
 tuples/sec to 30k tuples/sec with a step size of 500 tuples/sec. The sending
@@ -24,12 +33,6 @@ occurs at the same time as the loss in throughput consistency in
 Figure~\ref{fig:sp1-tput}.}
 \label{fig:sp1-latency}
 \end{figure}
-
-
-Our primary evaluation was on Spark and System-X. Both of these systems were
-mostly evaluated in stand-alone mode because of issues with System-X (further
-discussed in Section~\ref{ssec:sysx-dist}). This section covers the two primary
-benchmarks that we ran on both systems and some graphs of our results.
 
 For Spark Streaming we found that our benchmarking methodology finally worked
 fairly decently once we were able to measure throughput, latency and fully
@@ -56,7 +59,6 @@ there waiting, thus drop its overall throughput.
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/sp2_tput.pdf}
-%\vspace{-0.3in}
 \caption{Throughput/Time for a single Spark host, running grep. We sent 100B tuples at a
 slowly ramped up rate from 1K tuples/sec to 30k tuples/sec with a step size of
 500 tuples/sec. The sending rate remained constant for 10 seconds before
@@ -67,7 +69,6 @@ transitioning to the next throughput.}
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/sp2_latency.pdf}
-%\vspace{-0.3in}
 \caption{Average latency to process tuples for a single Spark host. Similar to
 Figure~\ref{fig:sb1-tput} we sent 100B tuples at a slowly ramped up rate from 1K
 tuples/sec to 30k tuples/sec with a step size of 500 tuples/sec. The sending
@@ -84,43 +85,55 @@ latency, which can be seen in Figures~\ref{fig:sp2-tput}
 and~\ref{fig:sp2-latency}. We see similar patterns in terms of when the system
 cannot handle any higher tuple throughput, around the 450th time step we see
 the throughput's values oscillate. Similarly to the word count graphs you can
-see the sending throughput also starts oscilatting slightly because of the
+see the sending throughput also starts oscillating slightly because of the
 previously mentioned tight relationship between the TCP sender and receiver.
 
-
+\subsection{System-X}
+\label{ssec:sysx1}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/sb1_tput.pdf}
-%\vspace{-0.3in}
 \caption{System-X word count. The black vertical bars represent System-X producing errors relating to it unable to transform the bytes in its internal buffer to a tuple.}
-\label{fig:label-me-if-you-want}
+\label{fig:sb1-tput}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/sb2_tput.pdf}
-%\vspace{-0.3in}
 \caption{System-X grep. Around time step 130 System-X froze and would not report anymore results but somehow kept the TCP connection with the tuple generator alive since it was happy to keep receiving tuples but dropping them on the floor.}
-\label{fig:label-me-if-you-want}
+\label{fig:sb2-tput}
 \end{figure}
 
+Evaluating System-X was tricky, since its processing is much different than
+Spark. We re-created the word count and grep benchmarks in System-X and they
+performed okay but not nearly as good as Spark. System-X also has a much
+different failure condition. When System-X begins to get over saturated it
+starts raising buffer exceptions on the client. We saw various strange behavior
+by System-X while trying to overload it which can be broken down into 3
+non-mutually-exclusive categories: hundreds of buffer exceptions raised, locked
+up client application and simply dropping tuples. We found the buffer
+exceptions to be the most interesting since they had an associated timestamp
+and we could correlate them with other events and graph them. As seen in 
+Figures~\ref{fig:sb1-tput} and~\ref{fig:sb2-tput}, the black vertical lines
+indicate buffer exception events that were produced by the client.
+
+\subsection{Spark Distributed}
+\label{ssec:spark-dist1}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/spark-wc-dist.pdf}
-%\vspace{-0.3in}
 \caption{Spark distributed, word count}
-\label{fig:label-me-if-you-want}
+\label{fig:spark-wc-dist}
 \end{figure}
 
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/spark-grep-dist.pdf}
-%\vspace{-0.3in}
 \caption{Spark distributed, grep}
-\label{fig:label-me-if-you-want}
+\label{fig:spark-grep-dist}
 \end{figure}
 
 
