@@ -118,6 +118,10 @@ and we could correlate them with other events and graph them. As seen in
 Figures~\ref{fig:sb1-tput} and~\ref{fig:sb2-tput}, the black vertical lines
 indicate buffer exception events that were produced by the client.
 
+Figure~\ref{fig:sb2-tput} shows a particularly interesting event sequence. The 
+application freezes around time step 130 but remains connected to the tuple generator
+and accepts new tuples for some time before quiting.
+
 \subsection{Spark Distributed}
 \label{ssec:spark-dist1}
 
@@ -136,6 +140,8 @@ indicate buffer exception events that were produced by the client.
 \label{fig:spark-grep-dist}
 \end{figure}
 
-
+Lastly, we have spark distributed which is really where Spark shines. We originally 
+were curious to know more about how Spark scales with the number of worker machines
+that are added to it.
 
 
