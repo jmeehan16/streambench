@@ -1,11 +1,12 @@
 \section{Methodology}
-\subsection{Strategy}
+
 Streaming systems are typically evaluated by two major metrics:
 \begin{itemize}
 \item \textbf{Throughput:} We evaluate throughput as the number of tuples that a full system is capable of processing per second.
 \item \textbf{Latency:} We consider latency numbers to be the period of time between a tuple's generation and when it is fully processed by the streaming system.  The latency number that a window reports each reporting interval is the current time minus the timestamp of its oldest tuple.
 \end{itemize}
 
+\subsection{Tuple Generation}
 In both of the benchmarks we use in our comparisons, we consider a tuple to be string of text of a fixed number of words, the first of which indicates the tuple's epoch timestamp in milliseconds.  We then append a second timestamp to the tuple at the end of processing.  We calculate our latency by subtracking our initial timestamp from our final timestamp.  We calculate our throughput by counting the number of tuples with an initial timestamp that are processed within the given window of time.
 
 \subsection{Architecture Philosophy}
