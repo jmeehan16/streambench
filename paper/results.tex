@@ -140,8 +140,16 @@ and accepts new tuples for some time before quiting.
 \label{fig:spark-grep-dist}
 \end{figure}
 
-Lastly, we have spark distributed which is really where Spark shines. We originally 
-were curious to know more about how Spark scales with the number of worker machines
-that are added to it.
+Lastly, we have spark distributed which is really where Spark shines. We
+originally were curious to know more about how Spark scales with the number of
+worker machines that are added to it. We configured 4 machines as workers and a
+master and tried our two different benchmarks. We found that because Spark
+allows for distributed tuple digestion the scalability of Spark was very nicely
+linear, which can be seen in Figures~\ref{fig:spark-wc-dist1}
+and~\ref{fig:spark-grep-dist}. On average we found in our early results that
+Spark was able to process roughly 10k tuples/sec per worker machine. We now
+believe this number is probably decently higher. Our original tests, seen in
+the graphs, had a tuple generation bottleneck that we did not know about until
+later.
 
 
