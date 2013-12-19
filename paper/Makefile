@@ -14,9 +14,9 @@ SECTIONS = \
            background.tex \
            methodology.tex \
            implementation.tex \
-           challenges.tex \
            lessonslearned.tex \
            futurework.tex \
+           conclusions.tex \
 
 TEXT =  $(SECTIONS) 
 

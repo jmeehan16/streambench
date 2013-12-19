@@ -11,7 +11,7 @@ evaluation of the scalability of spark distributed
 \subsection{Spark}
 \label{ssec:spark1}
 
-\begin{figure}[t]
+\begin{figure}[b]
 \centering
 \includegraphics[width=1\linewidth]{figures/sp1_tput.pdf}
 \caption{Throughput/Time for a single Spark host running word count. We sent 100B tuples at a
@@ -40,7 +40,7 @@ saturate the system through tuple generation. Figure~\ref{fig:sp1-tput}
 and~\ref{fig:sp1-latency} show the throughput and latency for a word count job. These
 figures show that as the sending rate of the tuple generator increases we
 finally saturate the system around the 450th time step and at 17,500 tuples per
-second. A similar pattern is seem in Figure~\ref{fig:sp1-latency} where around
+second. A similar pattern is seen in Figure~\ref{fig:sp1-latency} where around
 the 450th time step we see latency spike and never fully recover. 
 
 One interesting note about Figure~\ref{fig:sp1-tput} is that the green line
