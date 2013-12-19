@@ -1,5 +1,25 @@
 \section{Methodology}
-Discuss our benchmark implementation details, probably includes a handful of sub-sections
+\subsection{Strategy}
+Streaming systems are typically evaluated by two major metrics:
+\begin{itemize}
+\item textbf{Throughput:} We evaluate throughput as the number of tuples that a full system is capable of processing per second.
+\item textbf{Latency:} We consider latency numbers to be the period of time between a tuple's generation and when it is fully processed by the streaming system.
+\end{itemize}
+
+In both of the benchmarks we use in our comparisons, we consider a tuple to be string of text of a fixed number of words, the first of which indicates the tuple's epoch timestamp in milliseconds.  We then append a second timestamp to the tuple at the end of processing.  We calculate our latency by subtracking our initial timestamp from our final timestamp.  We calculate our throughput by counting the number of tuples with an initial timestamp that are processed within a given second.
+
+\subsection{Architecture Philosophy}
+A typical streaming system recieves new tuples of data from an outside source via some external connection.  The system then processes the data, stores information as necessary, and then outputs results as another stream to be displayed or used by other applications.  We are only interested in evaluating the actual stream processing portion of this process.
+
+When benchmarking specific workloads, we intended to put as little external strain on the system as possible in order to avoid contaminating our results.  The actual streaming system is hosted on a specific number of machines, with separate machines generating tuples and sending them via the network.  In addition, the output is also sent to yet another machine and written to disk there, again minimizing extra strain on the machines actually performing the workload.
+
+
+
+INSERT DIAGRAM OF INTENDED BENCHMARKING STRATEGY HERE
+
+\subsection{Benchmarks}
+\subsubsection{Wordcount}
+\subsubsection{Grep}
 
 \begin{figure}[t]
 \centering

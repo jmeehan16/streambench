@@ -1,16 +1,14 @@
 \section{Background}
-SDMS discussion
+\subsection{Streaming Overview}
+In a traditional database management system, data is imported into a relatively static data structure.  A user is able to run any queries necessary in order to retrieve desired information.  Streaming systems take the opposite approach, percieving the data as consistently changing.  Continuous queries are written into the system in order to perform analytics on this flow of information, particularly on a subsection, or window, of time.
 
-\subsection{Spark}
-Maybe talk about Spark~\cite{dstreams}?
+For instance, say that a stock broker wishes to purchase a particular stock when a five-minute moving average crosses a particular threshold.  In this case, the incoming ticker price for this stock is the stream of information, a sliding window of five minutes is placed on this stream, and a continuous query aggregates this data to calculate the average.  A filter operator is placed further downstream of the window in order to trigger further operators if the threshold is met.
 
-\subsection{Storm}
-Storm discussion?
+\subsection{Modern Streaming Systems}
+Due to the nature of real-time processing, it is crucial that all processing take place in memory with minimal requests to disk.  Therefore it is not surprising that distributed, main-memory database systems have become the key players in the streaming database research space.  These systems take advantage of the fact that many streaming applications are highly parallizeable in order to distribute the stream processing across multiple worker machines.  In this paper, we compare the popular distributed system, Spark Streaming, to an established commercial system, which we will call this "System-X."
 
-\subsection{System-X} 
-System-X discussion?
+\subsubsection{Spark Streaming}
+Spark Streaming builds on Apache Spark, creating a streaming API on top of the existing main-memory distributed system.  Also known as Discretized Streams, this system takes advantage of Spark's resilient NOTE LOOK UP RDDs in order to store streaming state.~\cite{dstreams}  Time intervals are discretized in order to allow Spark to batch all information within a specific interval, similar to Jennifer Widom's CQL. NOTE SITE CQL  Intermediate states are stored in the system, in order to easily calculate windows and compute aggregates.  Applications for Spark are programmed using Scala syntax, and make heavy use of map reduce operations to parallelize its processing.
 
-\subsection{S-Store}
-S-Store?
-
-
+\subsubsection{System-X} 
+System-X is an established streaming system, built on research which helped to define streaming systems at their inception.  It is primarily designed to be highly user-friendly, providing methods to interface with a large number of applications.  System-X makes use of a graphical programming user interface, but also provides its own "Streaming SQL" language.
