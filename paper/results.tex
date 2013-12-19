@@ -30,7 +30,7 @@ Figure~\ref{fig:sb1-tput}.}
 \centering
 \includegraphics[width=1\linewidth]{figures/sb1_tput.pdf}
 %\vspace{-0.3in}
-\caption{System-X word count}
+\caption{System-X word count. The black vertical bars represent System-X producing errors relating to it unable to transform the bytes in its internal buffer to a tuple.}
 \label{fig:label-me-if-you-want}
 \end{figure}
 
@@ -38,7 +38,7 @@ Figure~\ref{fig:sb1-tput}.}
 \centering
 \includegraphics[width=1\linewidth]{figures/sb2_tput.pdf}
 %\vspace{-0.3in}
-\caption{System-X grep}
+\caption{System-X grep. Around time step 130 System-X froze and would not report anymore results but somehow kept the TCP connection with the tuple generator alive since it was happy to keep receiving tuples but dropping them on the floor.}
 \label{fig:label-me-if-you-want}
 \end{figure}
 
