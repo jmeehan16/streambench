@@ -14,5 +14,8 @@ Our tuple generator was designed with the false assumption that it would reliabl
 
 Instead, we found that once the TCP socket buffer is full on the receiver's side, it signals the sender program to stop sending new tuples.  Effectively, this freezes our tuple generator program for a very short period of time, allowing the streaming system to catch up.  As a result of this misunderstanding, calculating the maximum throughput of the system was much more difficult than expected.  We instead ended up using the strategy outlined in section \john{results section}.
 
+\subsection{System-X unicode}
+System-X does not support unicode by default, and does not fail gracefully.  Instead, it will continuously attempt to process the same tuple, but will never actually succeed.
+
 \subsection{System-X distributed}
 System-X is advertised as being "distributed system ready."  While this is technically true, there is no method of automating the creation of a distributed workflow, and it must instead be built manually.  Due to licensing issues and time constraints, we were unable to complete a working distributed workflow for System-X for this paper.

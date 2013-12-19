@@ -16,6 +16,7 @@ SECTIONS = \
            implementation.tex \
            challenges.tex \
            lessonslearned.tex \
+           futurework.tex \
 
 TEXT =  $(SECTIONS) 
 

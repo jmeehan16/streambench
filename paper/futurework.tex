@@ -1,0 +1,19 @@
+\section{Future Work}
+While we were able to answer many of our original questions, there are a number of open opportunites available to pursue as future work.
+
+\subsection{Streaming Benchmarks}
+While the Wordcount and Grep benchmarks provided interesting insights into Spark and System-X, neither was a particularly complicated streaming workload.  Key aspects of a typical streaming system, such as complicated sliding windows, joining multiple streams, or comparison to historical patterns were left out of these benchmarks.
+
+One workload that would be particularly interesting is the canonical streaming benchmark, Linear Road.~\cite{linearroad}  Linear Road simulates the tracking of multiple "X-ways," each of which contains the continuously changing positions of multiple moving vehicles.  This benchmark is designed to test the full suite of streaming functionalities.
+
+\subsection{Twitter Storm}
+Twitter Storm is similar to Spark, another popular open source, main-memory distributed system.  While Storm has been compared less-than-favorably to Spark by Zaharia, et al~\cite{dstreams}, it would be interesting to see the same results from an unbiased source, particularly if a more complicated benchmark is used.
+
+\subsection{Large-Scale Distribution}
+While we were able to evaluate Spark on a small distributed system, realistic clusters of Spark machines include dozens, if not hundreds, of nodes.  We hypothesize that Spark continues to scale relatively linearly, as shown in their experiments.~\cite{dstreams}
+
+\subsection{Distributed System-X}
+One obvious omission from this paper is the lack of evaluation of System-X on a distributed environment.  We hypothesize that System-X would also scale linearly, though it is likely that there would be a reduction in throughput 
+
+\subsection{S-Store}
+S-Store is a new distributed, main-memory streaming system being developed as a collaboration between Brown University, MIT, and Brandeis University.  The current prototype of S-Store is built on the existing main-memory OLTP system, H-Store, and is designed to provide strong transactional guarantees on a streaming system.~\cite{hstore}  While it is highly unlikely that S-Store would beat Spark in a benchmarking comparison, it would be very interesting to see how the raw throughput numbers compare between systems with very different fundamental philosophies.  The specific question: can S-Store reach a streaming throughput comparable to Spark while also supporting OLTP?
