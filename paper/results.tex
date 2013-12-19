@@ -45,7 +45,7 @@ the 450th time step we see latency spike and never fully recover.
 
 One interesting note about Figure~\ref{fig:sp1-tput} is that the green line
 (sending throughput) roughly matches the received throughput between time step
-0 and 450, but time greater than 450 the throughput begins to dip. After
+0 and 450, but for time greater than 450 the throughput begins to dip. After
 careful thought we concluded that this is because Spark is not draining its TCP
 receive buffer fast enough, which is causing the TCP sender to wait for Spark
 to catch up before it can send more tuples. This was determined by ensuring
@@ -79,12 +79,12 @@ Figure~\ref{fig:sb1-tput}.}
 \label{fig:sp2-latency}
 \end{figure}
 
-In a similar sense as the word count graphs we also have grep benchmark
+In addition to the the word count graphs, we also have grep benchmark
 results.  We evaluate the system under the same metric, tuple throughput and
 latency, which can be seen in Figures~\ref{fig:sp2-tput}
 and~\ref{fig:sp2-latency}. We see similar patterns in terms of when the system
 cannot handle any higher tuple throughput, around the 450th time step we see
-the throughput's values oscillate. Similarly to the word count graphs you can
+the throughput's values oscillate. Similarly to the word count graphs, you can
 see the sending throughput also starts oscillating slightly because of the
 previously mentioned tight relationship between the TCP sender and receiver.
 
@@ -106,11 +106,11 @@ previously mentioned tight relationship between the TCP sender and receiver.
 \end{figure}
 
 Evaluating System-X was tricky, since its processing is much different than
-Spark. We re-created the word count and grep benchmarks in System-X and they
-performed okay but not nearly as good as Spark. System-X also has a much
-different failure condition. When System-X begins to get over saturated it
-starts raising buffer exceptions on the client. We saw various strange behavior
-by System-X while trying to overload it which can be broken down into 3
+Spark. We re-created the word count and grep benchmarks in System-X.  They
+performed decently, but not nearly as well as Spark. System-X also has a much
+different failure condition. When System-X begins to become over saturated, it
+starts raising buffer exceptions on the client. We noticed various strange behaviors
+by System-X while trying to overload it, which can be broken down into 3
 non-mutually-exclusive categories: hundreds of buffer exceptions raised, locked
 up client application and simply dropping tuples. We found the buffer
 exceptions to be the most interesting since they had an associated timestamp
@@ -140,16 +140,6 @@ and accepts new tuples for some time before quiting.
 \label{fig:spark-grep-dist}
 \end{figure}
 
-Lastly, we have spark distributed which is really where Spark shines. We
-originally were curious to know more about how Spark scales with the number of
-worker machines that are added to it. We configured 4 machines as workers and a
-master and tried our two different benchmarks. We found that because Spark
-allows for distributed tuple digestion the scalability of Spark was very nicely
-linear, which can be seen in Figures~\ref{fig:spark-wc-dist1}
-and~\ref{fig:spark-grep-dist}. On average we found in our early results that
-Spark was able to process roughly 10k tuples/sec per worker machine. We now
-believe this number is probably decently higher. Our original tests, seen in
-the graphs, had a tuple generation bottleneck that we did not know about until
-later.
+Lastly, we evaluated Spark as a distributed system, which is really where Spark shines. We originally were curious to know more about how Spark scales with the number of worker machines that are added to it. We configured 4 machines as workers and a master and tried our two different benchmarks. We found that because Spark allows for distributed tuple digestion, the scalability of Spark was very nicely linear, which can be seen in Figures~\ref{fig:spark-wc-dist1} and~\ref{fig:spark-grep-dist}. On average we found in our early results that Spark was able to process roughly 10k tuples/sec per worker machine. We now believe this number is probably decently higher, likely over 15k tuples/sec. Our original tests, seen in the graphs, had a tuple generation bottleneck that we did not know about until later.
 
 
