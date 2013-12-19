@@ -1,4 +1,5 @@
 \section{Implementation}
+\label{sec:impl}
 This section details the implementation of our benchmarking system.
 \subsection{Cluster}
 As mentioned in section~\ref{ssec:arch-phil}, the ideal cluster for a Spark system involves one master machine, X worker nodes, X tuple generators, and a node to collect output.  Previous benchmarking attempts have been performed on Amazon's EC2 machines.  Through the use of Amazon's infrastructure it provides the advantage of having an elastically-sized cluster that can easily be set up and replicated.  The disadvantage of using EC2 machines, however, is that each node is a virtual machine that may not be receiving the resources that are expected.  Additionally, there is little to no control over the network bandwidth on these machines, or what other information might be affecting throughput.  For these reasons, we chose to build our own cluster instead.  This was later determined to be a mistake (see Section~\ref{sec:lessons}).
