@@ -1,7 +1,7 @@
 #set term postscript eps color enhanced size 5,2.5 16 solid
 set term pdf size 5,2.5 fsize 10 linewidth 1
 
-set title 'Spark Throughput 1 host' font "Times-Roman, 14"
+set title 'Spark Throughput, 1 host, Word Count' font "Times-Roman, 14"
 set xlabel 'Time'
 set ylabel 'Tuples/sec'
 
