@@ -1,5 +1,4 @@
 \section{Results}
-Results!
 
 \begin{figure}[t]
 \centering
@@ -9,7 +8,7 @@ Results!
 slowly ramped up rate from 1K tuples/sec to 30k tuples/sec with a step size of
 500 tuples/sec. The sending rate remained constant for 10 seconds before
 transitioning to the next throughput.}
-\label{fig:sb1-tput}
+\label{fig:sp1-tput}
 \end{figure}
 
 \begin{figure}[t]
@@ -22,9 +21,37 @@ tuples/sec to 30k tuples/sec with a step size of 500 tuples/sec. The sending
 rate remained constant for 10 seconds before transitioning to the next
 throughput. The astute reader will notice that the latency spike in this graph
 occurs at the same time as the loss in throughput consistency in
-Figure~\ref{fig:sb1-tput}.}
-\label{fig:label-me-if-you-want}
+Figure~\ref{fig:sp1-tput}.}
+\label{fig:sp1-latency}
 \end{figure}
+
+
+Our primary evaluation was on Spark and System-X. Both of these systems were
+mostly evaluated in stand-alone mode because of issues with System-X (further
+discussed in Section~\ref{ssec:sysx-dist}). This section covers the two primary
+benchmarks that we ran on both systems and some graphs of our results.
+
+For Spark Streaming we found that our benchmarking methodology finally worked
+fairly decently once we were able to measure throughput, latency and fully
+saturate the system through tuple generation. Figure~\ref{fig:sp1-tput}
+and~\ref{fig:sp1-latency} show the throughput and latency for a word count job. These
+figures show that as the sending rate of the tuple generator increases we
+finally saturate the system around the 450th time step and at 17,500 tuples per
+second. A similar pattern is seem in Figure~\ref{fig:sp1-latency} where around
+the 450th time step we see latency spike and never fully recover. 
+
+One interesting note about Figure~\ref{fig:sp1-tput} is that the green line
+(sending throughput) roughly matches the received throughput between time step
+0 and 450, but time greater than 450 the throughput begins to dip. After
+careful thought we concluded that this is because Spark is not draining its TCP
+receive buffer fast enough, which is causing the TCP sender to wait for Spark
+to catch up before it can send more tuples. This was determined by ensuring
+that the tuple generator's TCP sender socket's flag was set to MSG\_WAITALL in
+conjunction with Python's sendall function~\cite{python-sockets}. This caused
+the sending socket to fully flush all its bytes when it wrote to the socket,
+which means if the receiver was already full the send would just have to sit
+there waiting, thus drop its overall throughput.
+
 
 \begin{figure}[t]
 \centering
@@ -34,7 +61,7 @@ Figure~\ref{fig:sb1-tput}.}
 slowly ramped up rate from 1K tuples/sec to 30k tuples/sec with a step size of
 500 tuples/sec. The sending rate remained constant for 10 seconds before
 transitioning to the next throughput.}
-\label{fig:sb1-tput}
+\label{fig:sp2-tput}
 \end{figure}
 
 \begin{figure}[t]
@@ -48,8 +75,17 @@ rate remained constant for 10 seconds before transitioning to the next
 throughput. The astute reader will notice that the latency spike in this graph
 occurs at the same time as the loss in throughput consistency in
 Figure~\ref{fig:sb1-tput}.}
-\label{fig:label-me-if-you-want}
+\label{fig:sp2-latency}
 \end{figure}
+
+In a similar sense as the word count graphs we also have grep benchmark
+results.  We evaluate the system under the same metric, tuple throughput and
+latency, which can be seen in Figures~\ref{fig:sp2-tput}
+and~\ref{fig:sp2-latency}. We see similar patterns in terms of when the system
+cannot handle any higher tuple throughput, around the 450th time step we see
+the throughput's values oscillate. Similarly to the word count graphs you can
+see the sending throughput also starts oscilatting slightly because of the
+previously mentioned tight relationship between the TCP sender and receiver.
 
 
 
