@@ -70,9 +70,9 @@ transitioning to the next throughput.}
 \centering
 \includegraphics[width=1\linewidth]{figures/sp2_latency.pdf}
 \caption{Average latency to process tuples for a single Spark host. Similar to
-Figure~\ref{fig:sb1-tput} we sent 100B tuples at a slowly ramped up rate from 1K
+Figure~\ref{fig:sb1-tput}, we sent 100B tuples at a slowly ramped up rate from 1K
 tuples/sec to 30k tuples/sec with a step size of 500 tuples/sec. The sending
-rate remained constant for 10 seconds before transitioning to the next
+rate remained constant for 10 seconds before transitioning to a higher
 throughput. The astute reader will notice that the latency spike in this graph
 occurs at the same time as the loss in throughput consistency in
 Figure~\ref{fig:sb1-tput}.}
@@ -94,14 +94,14 @@ previously mentioned tight relationship between the TCP sender and receiver.
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/sb1_tput.pdf}
-\caption{System-X Wordcount. The black vertical bars represent System-X producing errors relating to it unable to transform the bytes in its internal buffer to a tuple.}
+\caption{System-X Wordcount. The black vertical bars represent System-X producing errors due to it being unable to transform the bytes in its internal buffer into a tuple.}
 \label{fig:sb1-tput}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=1\linewidth]{figures/sb2_tput.pdf}
-\caption{System-X Grep. Around time step 130 System-X froze and would not report anymore results but somehow kept the TCP connection with the tuple generator alive since it was happy to keep receiving tuples but dropping them on the floor.}
+\caption{System-X Grep. Around time step 130 System-X froze and would not continue reporting results, but somehow kept the TCP connection with the tuple generator alive.  It continued to receive tuples, but did not process them.}
 \label{fig:sb2-tput}
 \end{figure}
 
