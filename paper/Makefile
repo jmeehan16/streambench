@@ -13,6 +13,7 @@ SECTIONS = \
            results.tex \
            background.tex \
            methodology.tex \
+           implementation.tex \
            challenges.tex \
 
 TEXT =  $(SECTIONS) 
