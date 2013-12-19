@@ -13,15 +13,20 @@ A typical streaming system recieves new tuples of data from an outside source vi
 
 When benchmarking specific workloads, we intended to put as little external strain on the system as possible in order to avoid contaminating our results.  The actual streaming system is hosted on a specific number of machines, with separate machines generating tuples and sending them via the network.  In addition, the output is also sent to yet another machine and written to disk there, again minimizing extra strain on the machines actually performing the workload.
 
-\john{INSERT DIAGRAM OF INTENDED BENCHMARKING STRATEGY HERE}
-
 \subsection{Benchmarks}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=1\linewidth]{figures/System-XWorkflow.pdf}
+%\vspace{5.3in}
+\caption{Graphical representation of the Wordcount benchmark in System-X}
+\label{fig:wordcount}
+\end{figure}
+
 We evaluated our systems using two workloads: Wordcount and Grep
 
 \subsubsection{Wordcount}
 In the Wordcount benchmark, each input tuple is broken down into individual words and counted within a window of time.  This benchmark should favor Spark, as it is highly parallelizeable.   Spark breaks these tuples into an array of words and then performs map and reduce operations to find their counts.  System-X on the other hand must iterate over each tuple, generate a new tuple for each word, and then perform an aggregation on the resulting tuples.
-
-\john{Insert diagram of each benchmark, one from Spark perspective one for System-X}
 
 \subsubsection{Grep}
 In the Grep benchmark, input tuples are sent through a filter operation in order to find sentences which contain the word "the."  Both Spark and System-X execute similar strategies for this benchmark.
